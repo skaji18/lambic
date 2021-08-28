@@ -33,12 +33,78 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: 'HelloWorld',
+import {
+  defineComponent,
+  reactive,
+  computed,
+  watch,
+  onMounted
+} from '@vue/composition-api'
+
+export default defineComponent({
+  /* components ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+  components: {
+    // SampleComponent,
+  },
+  /* components ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+  /* props      ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
   props: {
-    msg: String
+    msg: { type: String, default: 'Hello' }
+    // Huga型の配列
+    // huga: { type: Array as () => Huga[] },
+    // Object型
+    // hoge: { type: Object as () => Hoge, required: true },
+  },
+  /* props      ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+  setup () {
+    /* data       ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+    const state = reactive({
+      inputValue: '0' as string | undefined
+    })
+    /* data       ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+
+    /* computed   ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+    const canDouble = computed(
+      () =>
+        state.inputValue !== undefined && /^-?[0-9]+$/.exec(state.inputValue)
+    )
+    const doubleNumber = computed(() =>
+      canDouble ? Number(state.inputValue) * 2 : undefined
+    )
+    const message = computed(() => `入力した値は${state.inputValue}です`)
+    /* computed   ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+
+    /* methods    ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+    const handleClick = () => {
+      window.alert(message.value)
+    }
+    /* methods    ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+
+    /* watch      ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+    watch(
+      // 監視対象のプロパティ
+      () => state.inputValue,
+      // 変更があったときのアクション。ここではコンソールに出力している
+      val => console.log(`新しい値は ${val}`)
+    )
+    /* watch      ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+
+    // ライフサイクルイベント
+    /* mounted    ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+    onMounted(() => {
+      window.alert('mount完了!!')
+    })
+    /* mounted    ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+
+    // Viewから参照するためにreturnで返却する
+    return {
+      state,
+      canDouble,
+      doubleNumber,
+      handleClick
+    }
   }
-}
+})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

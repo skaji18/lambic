@@ -19,7 +19,7 @@
         <v-list-tile v-if="user" class="my-2">
           <button type="button" @click="goMyPage">
             <v-list-tile-avatar>
-              <img v-bind:src="user.photoURL">
+              <img :src="user.photoURL" >
             </v-list-tile-avatar>
           </button>
           <v-list-tile-content>
@@ -99,12 +99,12 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import Vue from 'vue'
 
-export default {
-  name: 'app',
+export default Vue.extend({
   data () {
     return {
       permanent: false
@@ -154,7 +154,7 @@ export default {
       return require('@/assets/' + fileName)
     }
   }
-}
+})
 </script>
 
 <style scoped>

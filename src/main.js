@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueCompositionAPI from '@vue/composition-api'
 import Vuetify from 'vuetify'
 import VueQriously from 'vue-qriously'
 import moment from 'moment'
@@ -13,6 +14,7 @@ moment.locale('ja', {
   weekdaysShort: ['日', '月', '火', '水', '木', '金', '土']
 })
 
+Vue.use(VueCompositionAPI)
 Vue.use(Vuetify)
 Vue.use(VueQriously)
 Vue.config.productionTip = false
