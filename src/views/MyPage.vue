@@ -33,7 +33,7 @@
           </v-layout>
           <v-layout row>
             <v-flex xs12 md6>
-              <v-btn @click="updateUserInfo" color="green" class="white--text">
+              <v-btn color="green" class="white--text" @click="updateUserInfo">
                 更新する
               </v-btn>
             </v-flex>
@@ -44,9 +44,9 @@
     <v-snackbar
       v-model="snackbar"
       :bottom="'top' === 'bottom'"
-      :timeout=5000
+      :timeout="5000"
       :top="'top'"
-      color=green
+      color="green"
     >
       更新しました。
       <v-btn flat @click="snackbar = false">
@@ -58,41 +58,40 @@
 
 <script>
 export default {
-  name: 'myPage',
-  data () {
+  name: "MyPage",
+  data() {
     return {
-      name: '',
+      name: "",
       errors: [],
-      snackbar: false
-    }
+      snackbar: false,
+    };
   },
-  created () {
+  created() {
     if (this.$store.getters.user) {
-      this.name = this.$store.getters.user.name
+      this.name = this.$store.getters.user.name;
     }
   },
   methods: {
-    validateUserName (name) {
-      const maxLength = 50
+    validateUserName(name) {
+      const maxLength = 50;
       return {
         length: name.length <= maxLength,
-        required: name.replace(/\s+$/mg, '').length > 0
-      }
+        required: name.replace(/\s+$/gm, "").length > 0,
+      };
     },
-    updateUserInfo () {
-      const res = this.validateUserName(this.name)
+    updateUserInfo() {
+      const res = this.validateUserName(this.name);
       if (Object.values(res).every((v) => v)) {
-        this.errors = []
-        this.$store.dispatch('updateUserInfo', { name: this.name })
-        this.snackbar = true
+        this.errors = [];
+        this.$store.dispatch("updateUserInfo", { name: this.name });
+        this.snackbar = true;
       } else {
         this.errors = [
-          !res.length ? 'ユーザ名は50文字以内にしてください。' : '',
-          !res.required ? 'ユーザ名を入力してください。' : ''
-        ]
-          .filter((e) => e !== '')
+          !res.length ? "ユーザ名は50文字以内にしてください。" : "",
+          !res.required ? "ユーザ名を入力してください。" : "",
+        ].filter((e) => e !== "");
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

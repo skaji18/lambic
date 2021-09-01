@@ -1,29 +1,31 @@
 module.exports = {
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     // firebase-loader の設定
-    config.module.rule('firebase')
+    config.module
+      .rule("firebase")
       .test(/firebase-config\.json$/)
-      .use('firebase-config')
-      .loader('./firebase-config-loader')
-      .end()
+      .use("firebase-config")
+      .loader("./firebase-config-loader")
+      .end();
     // ts-loader の設定
-    config.module.rule('type-script')
+    config.module
+      .rule("type-script")
       .test(/\.tsx?$/)
-      .use('ts-loader')
-      .loader('ts-loader')
+      .use("ts-loader")
+      .loader("ts-loader")
       .options({ transpileOnly: true, appendTsSuffixTo: [/\.vue$/] })
-      .end()
+      .end();
   },
   pages: {
     index: {
-      entry: 'src/main.js', // エントリーポイントとなるjs
-      template: 'public/index.html', // テンプレートのHTML
-      filename: 'index.html' // build時に出力されるファイル名
+      entry: "src/main.js", // エントリーポイントとなるjs
+      template: "public/index.html", // テンプレートのHTML
+      filename: "index.html", // build時に出力されるファイル名
     },
     subscreen: {
-      entry: 'src/subscreen/main.js',
-      template: 'public/subscreen.html',
-      filename: 'subscreen/index.html'
-    }
-  }
-}
+      entry: "src/subscreen/main.js",
+      template: "public/subscreen.html",
+      filename: "subscreen/index.html",
+    },
+  },
+};

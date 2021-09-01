@@ -10,37 +10,37 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import firebaseui from 'firebaseui-ja'
-import 'firebaseui-ja/dist/firebaseui.css'
+import firebase from "firebase/app";
+import firebaseui from "firebaseui-ja";
+import "firebaseui-ja/dist/firebaseui.css";
 
 export default {
-  data () {
+  data() {
     return {
       // FirebaseUIの設定値
       config: {
-        signInSuccessUrl: '/#/',
+        signInSuccessUrl: "/#/",
         signInOptions: [
           // 表示する認証バナーリスト
-          firebase.auth.GithubAuthProvider.PROVIDER_ID
+          firebase.auth.GithubAuthProvider.PROVIDER_ID,
         ],
-        tosUrl: '' // 利用規約のURLを指定
+        tosUrl: "", // 利用規約のURLを指定
+      },
+    };
+  },
+  mounted() {
+    const ui =
+      firebaseui.auth.AuthUI.getInstance() ||
+      new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start("#firebaseui-auth-container", this.config);
+  },
+  beforeCreate() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // ユーザ情報をセット
+        this.$store.dispatch("login", user);
       }
-    }
+    });
   },
-  mounted () {
-    const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth())
-    ui.start('#firebaseui-auth-container', this.config)
-  },
-  beforeCreate () {
-    firebase
-      .auth()
-      .onAuthStateChanged((user) => {
-        if (user) {
-          // ユーザ情報をセット
-          this.$store.dispatch('login', user)
-        }
-      })
-  }
-}
+};
 </script>

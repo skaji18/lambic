@@ -11,48 +11,43 @@
 
       <v-card v-if="screens">
         <v-list>
-
           <template v-for="(screen, index) in screens">
             <v-list-tile
+              :key="screen.id + '_list'"
               :to="{ path: 'screens/' + screen.id }"
-              :key="screen.id + '_list'">
-              <v-list-tile-title class="title ml-2" :key="screen.id + '_title'">
+            >
+              <v-list-tile-title :key="screen.id + '_title'" class="title ml-2">
                 <template v-if="screen.name">
                   {{ screen.name }}
                 </template>
-                <template v-else>
-                  （スクリーン名未設定）
-                </template>
+                <template v-else> （スクリーン名未設定） </template>
               </v-list-tile-title>
             </v-list-tile>
             <v-divider
-              v-if="index+1 < screens.length"
+              v-if="index + 1 < screens.length"
               :key="screen.id + '_divider'"
-              class="mx-2 my-2">
+              class="mx-2 my-2"
+            >
             </v-divider>
           </template>
-
         </v-list>
       </v-card>
 
       <v-card v-else>
         <v-card-title>
-          <div>
-            スクリーンが登録されていません。
-          </div>
+          <div>スクリーンが登録されていません。</div>
         </v-card-title>
       </v-card>
-
     </v-flex>
   </v-layout>
 </template>
 <script>
 export default {
-  name: 'adminScreenList',
+  name: "AdminScreenList",
   computed: {
-    screens () {
-      return this.$store.getters.screens
-    }
-  }
-}
+    screens() {
+      return this.$store.getters.screens;
+    },
+  },
+};
 </script>

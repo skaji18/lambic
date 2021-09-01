@@ -1,12 +1,14 @@
 <template>
   <v-app>
-    <v-navigation-drawer app fixed v-model="permanent">
+    <v-navigation-drawer v-model="permanent" app fixed>
       <v-toolbar flat>
         <v-list class="py-0">
           <v-list-tile :to="{ name: 'home' }">
-            <img :src="imagePath('logo\.png')" class="logo">
+            <img :src="imagePath('logo\.png')" class="logo" />
             <div class="text-xs-center ml-1">
-              <v-chip small outline color="red" class="text-xs-center caption">beta</v-chip>
+              <v-chip small outline color="red" class="text-xs-center caption"
+                >beta</v-chip
+              >
             </div>
           </v-list-tile>
         </v-list>
@@ -15,15 +17,14 @@
       <v-divider></v-divider>
 
       <v-list dense class="pt-0">
-
         <v-list-tile v-if="user" class="my-2">
           <button type="button" @click="goMyPage">
             <v-list-tile-avatar>
-              <img v-bind:src="user.photoURL">
+              <img :src="user.photoURL" />
             </v-list-tile-avatar>
           </button>
           <v-list-tile-content>
-            <v-list-tile-title @click="goMyPage" id="userName">
+            <v-list-tile-title id="userName" @click="goMyPage">
               <button type="button">{{ user.name }}</button>
             </v-list-tile-title>
             <v-list-tile-sub-title>
@@ -56,9 +57,7 @@
         </v-list-tile>
         <v-divider></v-divider>
 
-        <v-list-tile
-          :href="href.issues"
-          target="_blank">
+        <v-list-tile :href="href.issues" target="_blank">
           <v-list-tile-action>
             <v-icon>feedback</v-icon>
           </v-list-tile-action>
@@ -73,7 +72,7 @@
             <strong>管理者メニュー</strong>
           </v-list-tile>
 
-          <v-list-tile :to="{name: 'adminScreenList' }">
+          <v-list-tile :to="{ name: 'adminScreenList' }">
             <v-list-tile-action>
               <v-icon>cast</v-icon>
             </v-list-tile-action>
@@ -86,10 +85,12 @@
         </template>
       </v-list>
 
-      <qriously id="qrcode" class="pb-4" :value="href.here" :size="150"/>
+      <qriously id="qrcode" class="pb-4" :value="href.here" :size="150" />
     </v-navigation-drawer>
     <v-toolbar app color="light-green">
-      <v-toolbar-side-icon @click="permanent = !permanent"></v-toolbar-side-icon>
+      <v-toolbar-side-icon
+        @click="permanent = !permanent"
+      ></v-toolbar-side-icon>
     </v-toolbar>
     <v-content>
       <v-container fluid>
@@ -100,75 +101,76 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
-  name: 'app',
-  data () {
+  name: "App",
+  data() {
     return {
-      permanent: false
-    }
+      permanent: false,
+    };
   },
   computed: {
-    href () {
+    href() {
       return {
         here: `${window.location.origin}/#${this.$route.path}`,
-        issues: process.env.VUE_APP_ISSUES_URL
-      }
+        issues: process.env.VUE_APP_ISSUES_URL,
+      };
     },
-    user () {
-      return this.$store.getters.user
-    }
+    user() {
+      return this.$store.getters.user;
+    },
   },
-  beforeCreate () {
-    firebase
-      .auth()
-      .onAuthStateChanged((user) => {
-        if (user) {
-          // ユーザ情報をセット
-          this.$store.dispatch('login', user)
-        }
-      })
-    this.$store.dispatch('initStore')
+  beforeCreate() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // ユーザ情報をセット
+        this.$store.dispatch("login", user);
+      }
+    });
+    this.$store.dispatch("initStore");
   },
   methods: {
     // ログイン画面へ遷移
-    goLogin () {
-      this.$router.push({ path: '/login' })
+    goLogin() {
+      this.$router.push({ path: "/login" });
     },
     // ログアウト処理
-    doLogout () {
-      if (confirm('ログアウトしますか？')) {
-        firebase.auth().signOut().catch(function (error) {
-          console.log(error)
-        })
-        this.$store.dispatch('logout')
+    doLogout() {
+      if (confirm("ログアウトしますか？")) {
+        firebase
+          .auth()
+          .signOut()
+          .catch(function (error) {
+            console.log(error);
+          });
+        this.$store.dispatch("logout");
       }
     },
     // マイページ画面へ遷移
-    goMyPage () {
-      this.$router.push({ path: '/myPage' })
+    goMyPage() {
+      this.$router.push({ path: "/myPage" });
     },
-    imagePath (fileName) {
-      return require('@/assets/' + fileName)
-    }
-  }
-}
+    imagePath(fileName) {
+      return require("@/assets/" + fileName);
+    },
+  },
+};
 </script>
 
 <style scoped>
 #qrcode {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 img {
-    object-fit: contain;
+  object-fit: contain;
 }
 .logo {
-    height: 60%;
+  height: 60%;
 }
 </style>

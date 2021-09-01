@@ -1,37 +1,41 @@
 <template>
   <v-app>
     <v-toolbar height="80" extended>
-      <v-toolbar-title class="display-3">{{ presentationTitle }}</v-toolbar-title>
+      <v-toolbar-title class="display-3">{{
+        presentationTitle
+      }}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <qriously id="qrcode" class="pt-1 pb-0" :value="qrUrl" size="140"/>
-      <template v-slot:extension>
+      <qriously id="qrcode" class="pt-1 pb-0" :value="qrUrl" size="140" />
+      <template #extension>
         <div class="display-2 text-truncate">{{ presenterName }}</div>
       </template>
     </v-toolbar>
-    <v-progress-linear v-if="isLoadong" :indeterminate="isLoadong"></v-progress-linear>
+    <v-progress-linear
+      v-if="isLoadong"
+      :indeterminate="isLoadong"
+    ></v-progress-linear>
     <v-content v-else>
       <v-container fluid>
-        <v-layout
-          row
-          fill-height
-          align-center
-          justify-center
-        >
-          <v-flex v-if="presentation === null" class="display-1">ただいま発表は行われていません。</v-flex>
-          <v-flex v-else-if="stamps.length === 0" class="display-1">準備中...</v-flex>
+        <v-layout row fill-height align-center justify-center>
+          <v-flex v-if="presentation === null" class="display-1"
+            >ただいま発表は行われていません。</v-flex
+          >
+          <v-flex v-else-if="stamps.length === 0" class="display-1"
+            >準備中...</v-flex
+          >
           <template v-else>
-            <v-flex
-              v-for="stamp in stamps"
-              :key="stamp.id"
-              xs4
-              d-flex
-            >
+            <v-flex v-for="stamp in stamps" :key="stamp.id" xs4 d-flex>
               <v-card flat tile class="d-flex">
                 <img
                   :src="stamp.src || ''"
                   :alt="stamp.string"
-                  :class="['lighten-2', 'display-4', 'text-xs-center', {'blinking': stamp.blink}]"
-                >
+                  :class="[
+                    'lighten-2',
+                    'display-4',
+                    'text-xs-center',
+                    { blinking: stamp.blink },
+                  ]"
+                />
               </v-card>
             </v-flex>
           </template>
@@ -46,18 +50,18 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/firestore'
+import firebase from "firebase/app";
+import "firebase/firestore";
 
 export default {
-  name: 'subscreen',
+  name: "Subscreen",
   props: {
     id: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {
       isLoadong: true,
       screenInfo: null,
@@ -68,31 +72,32 @@ export default {
         screenInfo: null,
         presentation: null,
         stamps: null,
-        stampCounts: []
-      }
-    }
+        stampCounts: [],
+      },
+    };
   },
   computed: {
-    presentationTitle () {
-      return (this.presentation !== null && this.presentation.title)
+    presentationTitle() {
+      return this.presentation !== null && this.presentation.title
         ? this.presentation.title
-        : ''
+        : "";
     },
-    presenterName () {
-      return (this.presentation !== null && this.presentation.presenter != null)
+    presenterName() {
+      return this.presentation !== null && this.presentation.presenter != null
         ? this.presentation.presenter.name
-        : ''
+        : "";
     },
-    screenName () {
-      return (this.screenInfo !== null && this.screenInfo.name)
+    screenName() {
+      return this.screenInfo !== null && this.screenInfo.name
         ? this.screenInfo.name
-        : '（名称未設定の会場）'
+        : "（名称未設定の会場）";
     },
-    qrUrl () {
-      return (this.screenInfo !== null && this.screenInfo.displayPresentationRef !== null)
+    qrUrl() {
+      return this.screenInfo !== null &&
+        this.screenInfo.displayPresentationRef !== null
         ? `${window.location.origin}/#/presentations/${this.screenInfo.displayPresentationRef.id}`
-        : window.location.origin
-    }
+        : window.location.origin;
+    },
   },
   watch: {
     /**
@@ -100,160 +105,194 @@ export default {
      * @param newSC
      * @param oldSC
      */
-    stampCounts (newSC, oldSC) {
+    stampCounts(newSC, oldSC) {
       // 表示する発表が切り替わったときはデータが出そろうまで点滅させない
       if (newSC.length !== oldSC.length) {
-        return
+        return;
       }
       this.stamps = this.stamps.map((stmp, idx) => {
-        const maybeOldStmpCnt = oldSC.find((cnt) => cnt.stampId === stmp.id)
-        const maybeNewStmpCnt = newSC.find((cnt) => cnt.stampId === stmp.id)
+        const maybeOldStmpCnt = oldSC.find((cnt) => cnt.stampId === stmp.id);
+        const maybeNewStmpCnt = newSC.find((cnt) => cnt.stampId === stmp.id);
         if (maybeNewStmpCnt == null) {
-          return stmp
+          return stmp;
         }
-        const oldStmpCnt = (maybeOldStmpCnt != null && maybeOldStmpCnt.count != null)
-          ? maybeOldStmpCnt.count
-          : 0
-        const newStmpCnt = maybeNewStmpCnt.count || 0
-        const isCntChanged = oldStmpCnt !== newStmpCnt
+        const oldStmpCnt =
+          maybeOldStmpCnt != null && maybeOldStmpCnt.count != null
+            ? maybeOldStmpCnt.count
+            : 0;
+        const newStmpCnt = maybeNewStmpCnt.count || 0;
+        const isCntChanged = oldStmpCnt !== newStmpCnt;
         if (isCntChanged && stmp.blink && stmp.timer != null) {
-          clearTimeout(stmp.timer)
+          clearTimeout(stmp.timer);
         }
         return {
           ...stmp,
           blink: isCntChanged,
           timer: isCntChanged
-            ? setTimeout(() => { this.stamps[idx].blink = false }, 500)
-            : null
-        }
-      })
-    }
+            ? setTimeout(() => {
+                this.stamps[idx].blink = false;
+              }, 500)
+            : null,
+        };
+      });
+    },
   },
-  created () {
+  created() {
     // 各ドキュメントの変更を監視するリスナを設定
-    const firestore = firebase.firestore()
+    const firestore = firebase.firestore();
     // screenのリスナを設定
-    this.unsubscribe.screenInfo =
-      firestore.collection('screens')
-        .doc(this.id)
-        .onSnapshot((screenDoc) => {
+    this.unsubscribe.screenInfo = firestore
+      .collection("screens")
+      .doc(this.id)
+      .onSnapshot(
+        (screenDoc) => {
           // 表示する発表が切り替わった時の初期化処理
           if (this.unsubscribe.presentation != null) {
-            this.unsubscribe.presentation()
-            this.presentation = null
+            this.unsubscribe.presentation();
+            this.presentation = null;
           }
           if (this.unsubscribe.stampCounts !== []) {
-            this.unsubscribe.stampCounts.forEach((u) => u())
-            this.stampCounts = []
+            this.unsubscribe.stampCounts.forEach((u) => u());
+            this.stampCounts = [];
           }
           // 表示する発表が取得できない場合は後続のリスナの設定不要
           if (!screenDoc.exists) {
-            this.isLoadong = false
-            return
+            this.isLoadong = false;
+            return;
           }
-          this.screenInfo = screenDoc.data()
+          this.screenInfo = screenDoc.data();
           if (this.screenInfo.displayPresentationRef == null) {
-            this.isLoadong = false
-            return
+            this.isLoadong = false;
+            return;
           }
           // presentationのリスナを設定
           this.unsubscribe.presentation =
-            this.screenInfo.displayPresentationRef
-              .onSnapshot(async (doc) => {
-                if (doc.exists) {
-                  const presentation = doc.data()
-                  const presenter = await presentation.presenter.get()
-                  this.presentation = {
-                    ...presentation,
-                    presenter: presenter.exists ? presenter.data() : null
-                  }
-                } else {
-                  console.log('No such document!')
-                }
-                this.isLoadong = false
-              })
+            this.screenInfo.displayPresentationRef.onSnapshot(async (doc) => {
+              if (doc.exists) {
+                const presentation = doc.data();
+                const presenter = await presentation.presenter.get();
+                this.presentation = {
+                  ...presentation,
+                  presenter: presenter.exists ? presenter.data() : null,
+                };
+              } else {
+                console.log("No such document!");
+              }
+              this.isLoadong = false;
+            });
           // shardsのリスナを設定
-          const stampCounts = firestore.collection('stampCounts')
+          const stampCounts = firestore.collection("stampCounts");
           stampCounts
-            .where('presentationId', '==', this.screenInfo.displayPresentationRef.id)
+            .where(
+              "presentationId",
+              "==",
+              this.screenInfo.displayPresentationRef.id
+            )
             .get()
-            .then((query) => {
-              query.docs.forEach((stampCountSnap) => {
-                this.unsubscribe.stampCounts.push(stampCounts.doc(stampCountSnap.id).collection('shards').onSnapshot(() => {
-                  stampCounts.doc(stampCountSnap.id).collection('shards').get().then((snap) => {
-                    let totalCount = 0
-                    snap.forEach((doc) => {
-                      totalCount += doc.data().count
-                    })
-                    const stampId = stampCountSnap.data().stampId
-                    const data = { stampId: stampId, count: totalCount }
-                    // cloneした配列に対して変更し、元配列を上書きする
-                    // 単純に元配列を変更すると、更新前後で同じオブジェクトを参照し、差分が取れないため
-                    let stampCounts = []
-                    this.stampCounts.forEach((stampCount) => {
-                      stampCounts.push(JSON.parse(JSON.stringify(stampCount)))
-                    })
-                    const idx = stampCounts.findIndex((c) => c.stampId === stampId)
-                    if (idx !== -1) {
-                      stampCounts.splice(idx, 1, data)
-                    } else {
-                      stampCounts.push(data)
-                    }
-                    this.stampCounts = stampCounts
-                  })
-                }))
-              })
-            }, (error) => {
-              console.log('Error getting collection:', error)
-            })
-        }, (error) => {
-          console.log('Error getting document:', error)
-        })
+            .then(
+              (query) => {
+                query.docs.forEach((stampCountSnap) => {
+                  this.unsubscribe.stampCounts.push(
+                    stampCounts
+                      .doc(stampCountSnap.id)
+                      .collection("shards")
+                      .onSnapshot(() => {
+                        stampCounts
+                          .doc(stampCountSnap.id)
+                          .collection("shards")
+                          .get()
+                          .then((snap) => {
+                            let totalCount = 0;
+                            snap.forEach((doc) => {
+                              totalCount += doc.data().count;
+                            });
+                            const stampId = stampCountSnap.data().stampId;
+                            const data = {
+                              stampId: stampId,
+                              count: totalCount,
+                            };
+                            // cloneした配列に対して変更し、元配列を上書きする
+                            // 単純に元配列を変更すると、更新前後で同じオブジェクトを参照し、差分が取れないため
+                            let stampCounts = [];
+                            this.stampCounts.forEach((stampCount) => {
+                              stampCounts.push(
+                                JSON.parse(JSON.stringify(stampCount))
+                              );
+                            });
+                            const idx = stampCounts.findIndex(
+                              (c) => c.stampId === stampId
+                            );
+                            if (idx !== -1) {
+                              stampCounts.splice(idx, 1, data);
+                            } else {
+                              stampCounts.push(data);
+                            }
+                            this.stampCounts = stampCounts;
+                          });
+                      })
+                  );
+                });
+              },
+              (error) => {
+                console.log("Error getting collection:", error);
+              }
+            );
+        },
+        (error) => {
+          console.log("Error getting document:", error);
+        }
+      );
     // stampsのリスナを設定
-    this.unsubscribe.stamps =
-      firestore.collection('stamps')
-        .orderBy('order')
-        .onSnapshot((querySnapshot) => {
-          const stamps = []
-          querySnapshot
-            .forEach((doc) => {
-              const d = doc.data()
-              stamps.push({
-                id: doc.id,
-                blink: false,
-                timer: null,
-                ...d
-              })
-            })
-          this.stamps = stamps
-        }, (error) => {
-          console.log('Error getting collection:', error)
-        })
+    this.unsubscribe.stamps = firestore
+      .collection("stamps")
+      .orderBy("order")
+      .onSnapshot(
+        (querySnapshot) => {
+          const stamps = [];
+          querySnapshot.forEach((doc) => {
+            const d = doc.data();
+            stamps.push({
+              id: doc.id,
+              blink: false,
+              timer: null,
+              ...d,
+            });
+          });
+          this.stamps = stamps;
+        },
+        (error) => {
+          console.log("Error getting collection:", error);
+        }
+      );
   },
-  beforeDestroy () {
+  beforeUnmount() {
     // 各リスナのデタッチ
     Object.values(this.unsubscribe)
       .filter((e) => e != null)
       .forEach((unsubscribe) => {
         if (Array.isArray(unsubscribe)) {
-          unsubscribe.forEach((u) => u())
+          unsubscribe.forEach((u) => u());
         } else {
-          unsubscribe()
+          unsubscribe();
         }
-      })
-  }
-}
+      });
+  },
+};
 </script>
 
 <style scoped>
 #qrcode {
-    height: 100%;
+  height: 100%;
 }
-.blinking{
-    animation:blink 0.2s ease-in-out infinite alternate;
+.blinking {
+  animation: blink 0.2s ease-in-out infinite alternate;
 }
-@keyframes blink{
-    0% {opacity:0;}
-    100% {opacity:1;}
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

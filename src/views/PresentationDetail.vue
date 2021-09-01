@@ -1,7 +1,6 @@
 <template>
   <v-layout row class="pb-5">
     <v-flex v-if="presentation != null">
-
       <v-card>
         <v-card-text>
           <v-layout align-center mb-2 class="grey--text">
@@ -10,61 +9,67 @@
             <span>{{ event.date | toDateString }}</span>
           </v-layout>
           <v-layout align-center>
-          <h1 class="headline">{{ presentation.title }}</h1>
-          <v-spacer></v-spacer>
+            <h1 class="headline">{{ presentation.title }}</h1>
+            <v-spacer></v-spacer>
 
-          <v-menu
-            v-if="user != null &&
-              presentation.presenter &&
-              presentation.presenter.id == user.id"
-            bottom
-            left
-          >
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" class="mx-0 my-0">
-                <v-icon color="gray">more_vert</v-icon>
-              </v-btn>
-            </template>
-            <v-list class="px-2">
-              <v-list-tile @click="editPresentation">
-                <v-list-tile-title>
-                  <v-icon class="mr-1">edit</v-icon>編集する
-                </v-list-tile-title>
-              </v-list-tile>
-              <v-divider class="mx-2"></v-divider>
-              <v-list-tile @click="deletePresentation">
-                <v-list-tile-title>
-                  <v-icon class="mr-1">delete_forever</v-icon>削除する
-                </v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
-
+            <v-menu
+              v-if="
+                user != null &&
+                presentation.presenter &&
+                presentation.presenter.id == user.id
+              "
+              bottom
+              left
+            >
+              <template #activator="{ on }">
+                <v-btn icon class="mx-0 my-0" v-on="on">
+                  <v-icon color="gray">more_vert</v-icon>
+                </v-btn>
+              </template>
+              <v-list class="px-2">
+                <v-list-tile @click="editPresentation">
+                  <v-list-tile-title>
+                    <v-icon class="mr-1">edit</v-icon>編集する
+                  </v-list-tile-title>
+                </v-list-tile>
+                <v-divider class="mx-2"></v-divider>
+                <v-list-tile @click="deletePresentation">
+                  <v-list-tile-title>
+                    <v-icon class="mr-1">delete_forever</v-icon>削除する
+                  </v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
           </v-layout>
 
-          <div  v-if="presentation.presenter" class="grey--text mb-3">
+          <div v-if="presentation.presenter" class="grey--text mb-3">
             by {{ presentation.presenter.name }}
           </div>
-          <div  v-else class="grey--text mb-3">
+          <div v-else class="grey--text mb-3">
             （発表者情報は削除されています）
           </div>
-          <p class="markdown__preview" v-html="convertMd2Html(presentation.description)">"</p>
+          <p
+            class="markdown__preview"
+            v-html="convertMd2Html(presentation.description)"
+          >
+            "
+          </p>
         </v-card-text>
       </v-card>
 
-      <v-card  class="py-3 mb-2 sticky-top top-56">
+      <v-card class="py-3 mb-2 sticky-top top-56">
         <template v-for="(stamp, index) in presentation.stamps">
           <v-chip
             v-if="getStampCount(stamp.id) || getStampCount(stamp.id) === 0"
             :key="index"
-            @click="countUpStamp(stamp.id)"
             color="light-green"
             text-color="white"
             class="text-xs-center"
             label
+            @click="countUpStamp(stamp.id)"
           >
             <v-avatar v-if="stamp.src" tile color="grey lighten-3">
-              <img :src="stamp.src">
+              <img :src="stamp.src" />
             </v-avatar>
             <v-avatar v-else color="grey lighten-3" class="black--text">
               {{ stamp.string }}
@@ -82,8 +87,8 @@
         </v-card-title>
         <div
           v-for="comment in comments"
-          :class="{ 'yellow': comment.isDirect, 'lighten-4': comment.isDirect }"
           :key="comment.id + '-div'"
+          :class="{ yellow: comment.isDirect, 'lighten-4': comment.isDirect }"
         >
           <v-divider></v-divider>
           <v-card-text class="py-2">
@@ -91,38 +96,47 @@
               <small class="grey--text">ダイレクトコメント</small>
             </v-layout>
             <v-layout align-center mb-1>
-              <v-avatar
-                v-if="comment.userRef.photoURL"
-                size="28"
-                class="mr-1"
-              >
-                <img v-bind:src="comment.userRef.photoURL">
+              <v-avatar v-if="comment.userRef.photoURL" size="28" class="mr-1">
+                <img :src="comment.userRef.photoURL" />
               </v-avatar>
               <v-avatar v-else size="28" class="mr-1">
                 <v-icon size="28" color="gray">account_circle</v-icon>
               </v-avatar>
-              <strong  class="text-truncate">
-                {{ comment.userRef.name || '（削除されたユーザ）' }}
+              <strong class="text-truncate">
+                {{ comment.userRef.name || "（削除されたユーザ）" }}
               </strong>
               <v-spacer></v-spacer>
               <span>{{ comment.postedAt | toDateTimeString }}</span>
-              <v-menu bottom left v-if="comment.isEditable || comment.isDeletable">
-                <template v-slot:activator="{ on }">
+              <v-menu
+                v-if="comment.isEditable || comment.isDeletable"
+                bottom
+                left
+              >
+                <template #activator="{ on }">
                   <v-btn icon v-on="on">
                     <v-icon>more_vert</v-icon>
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-tile v-if="comment.isEditable" @click="openModifyComment(comment.id)">
+                  <v-list-tile
+                    v-if="comment.isEditable"
+                    @click="openModifyComment(comment.id)"
+                  >
                     <v-list-tile-title>編集</v-list-tile-title>
                   </v-list-tile>
-                  <v-list-tile v-if="comment.isDeletable" @click="deleteComment(comment.id)">
+                  <v-list-tile
+                    v-if="comment.isDeletable"
+                    @click="deleteComment(comment.id)"
+                  >
                     <v-list-tile-title>削除</v-list-tile-title>
                   </v-list-tile>
                 </v-list>
               </v-menu>
             </v-layout>
-            <p class="markdown__preview" v-html="convertMd2Html(comment.comment)"></p>
+            <p
+              class="markdown__preview"
+              v-html="convertMd2Html(comment.comment)"
+            ></p>
           </v-card-text>
         </div>
         <v-card-text v-if="comments.length === 0">
@@ -135,40 +149,22 @@
         </v-card-title>
       </v-card>
 
-      <v-btn
-        fixed
-        fab
-        bottom
-        left
-        color="green"
-        :to="prevLink"
-      >
+      <v-btn fixed fab bottom left color="green" :to="prevLink">
         <v-icon>arrow_back</v-icon>
       </v-btn>
 
       <v-dialog
+        v-if="presentation.isAllowComment !== false"
         v-model="dialog"
         width="500"
-        v-if="presentation.isAllowComment !== false"
       >
-        <v-btn
-          slot="activator"
-          fixed
-          fab
-          bottom
-          right
-          color="green"
-        >
+        <v-btn slot="activator" fixed fab bottom right color="green">
           <v-icon>create</v-icon>
         </v-btn>
 
         <v-card v-if="user" class="markdown__container">
           <v-card-text class="pb-1">
-            <v-alert
-              outline
-              :value="errors.length > 0"
-              color="error"
-            >
+            <v-alert outline :value="errors.length > 0" color="error">
               <ul>
                 <li v-for="(err, i) in errors" :key="i">{{ err }}</li>
               </ul>
@@ -183,35 +179,34 @@
               <v-tab>Write</v-tab>
               <v-tab>Preview</v-tab>
             </v-tabs>
-            <v-tabs-items
-              v-if="dialog"
-              v-model="tab"
-            >
+            <v-tabs-items v-if="dialog" v-model="tab">
               <v-tab-item>
                 <v-textarea
                   v-if="dialog"
+                  v-model="comment"
                   outline
                   autofocus
                   no-resize
                   name="comment-input"
                   label="input comment"
-                  v-model="comment"
                 ></v-textarea>
               </v-tab-item>
               <v-tab-item>
-                <v-card
-                  flat
-                  tile
-                  height="159"
-                  class="scroll"
-                >
-                  <v-card-text class="markdown__preview"  v-html="convertMd2Html(comment)"></v-card-text>
+                <v-card flat tile height="159" class="scroll">
+                  <v-card-text
+                    class="markdown__preview"
+                    v-html="convertMd2Html(comment)"
+                  ></v-card-text>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
 
             <!-- 新規投稿のときのみダイレクトコメントを選択可能 -->
-            <v-container v-if="this.editingCommentId === null" grid-list-md class="px-0 py-0">
+            <v-container
+              v-if="editingCommentId === null"
+              grid-list-md
+              class="px-0 py-0"
+            >
               <v-layout wrap row>
                 <v-flex shrink>
                   <v-checkbox
@@ -219,7 +214,7 @@
                     color="primary"
                     class="my-0 py-0"
                   >
-                    <template v-slot:label>
+                    <template #label>
                       <span class="black--text">
                         ダイレクトコメントにする
                       </span>
@@ -228,32 +223,23 @@
                 </v-flex>
                 <v-flex>
                   <v-tooltip right>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-icon color="primary" v-on="on">help</v-icon>
                     </template>
-                    <span><strong>ダイレクトコメント</strong>：<br>発表者と投稿者のみが<br>閲覧できるコメント</span>
+                    <span
+                      ><strong>ダイレクトコメント</strong
+                      >：<br />発表者と投稿者のみが<br />閲覧できるコメント</span
+                    >
                   </v-tooltip>
                 </v-flex>
               </v-layout>
             </v-container>
-
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              @click="postCommnet"
-            >
-              submit
-            </v-btn>
-            <v-btn
-              color="primary"
-              flat
-              @click="closeComment"
-            >
-              cancel
-            </v-btn>
+            <v-btn color="primary" @click="postCommnet"> submit </v-btn>
+            <v-btn color="primary" flat @click="closeComment"> cancel </v-btn>
           </v-card-actions>
         </v-card>
         <v-card v-else>
@@ -261,10 +247,7 @@
             <p class="title mt-3">コメントしてみませんか？</p>
           </v-card-text>
           <v-card-actions class="justify-center">
-            <v-btn
-              color="light-green"
-              :to="{ path: '/login' }"
-            >
+            <v-btn color="light-green" :to="{ path: '/login' }">
               ログインする
             </v-btn>
           </v-card-actions>
@@ -273,44 +256,51 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-
     </v-flex>
-    <v-progress-linear v-else :indeterminate="presentation == null"></v-progress-linear>
+    <v-progress-linear
+      v-else
+      :indeterminate="presentation == null"
+    ></v-progress-linear>
   </v-layout>
 </template>
 
 <script>
-import moment from 'moment'
-import markdownIt from '@/markdownIt'
+import moment from "moment";
+import markdownIt from "@/markdownIt";
 
 export default {
-  name: 'presentation',
+  name: "Presentation",
+  filters: {
+    toDateString(date) {
+      return moment(date).format("YYYY/MM/DD（ddd）");
+    },
+    toDateTimeString(date) {
+      return moment(date).format("YYYY/MM/DD HH:mm");
+    },
+  },
   props: {
     id: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {
       unsubscribes: [],
       dialog: false,
-      comment: '',
+      comment: "",
       isDirect: false,
       editingCommentId: null,
       errors: [],
-      tab: 0
-    }
-  },
-  async created () {
-    this.unsubscribes = await this.$store.dispatch('watchStampCount', { presentationId: this.id })
+      tab: 0,
+    };
   },
   computed: {
-    presentation () {
-      return this.$store.getters.presentation(this.id)
+    presentation() {
+      return this.$store.getters.presentation(this.id);
     },
-    event () {
-      return this.$store.getters.event(this.presentation.eventId)
+    event() {
+      return this.$store.getters.event(this.presentation.eventId);
     },
     /**
      * 情報を補完したコメントリスト
@@ -319,139 +309,149 @@ export default {
      * isDeletable：ログインユーザーがそのコメントを削除できるかどうか（管理者または投稿者が削除可能）
      * canShow：ログインユーザがそのコメントを閲覧できるかどうか（ダイレクトコメント投稿者、発表者、管理者のみ閲覧可能）
      */
-    comments () {
+    comments() {
       return this.presentation.comments
         .map((cm) => {
           const userRef = cm.userRef || {
             photoURL: null,
-            name: null
-          }
+            name: null,
+          };
           const loginUser = this.user || {
             id: null,
-            isAdmin: false
-          }
-          const isCommentedUser = userRef.id === loginUser.id
-          const presentations = this.$store.getters.presentation(this.id)
+            isAdmin: false,
+          };
+          const isCommentedUser = userRef.id === loginUser.id;
+          const presentations = this.$store.getters.presentation(this.id);
           return {
             ...cm,
             userRef,
             isEditable: isCommentedUser,
             isDeletable: loginUser.isAdmin || isCommentedUser,
-            canShow: !cm.isDirect || loginUser.isAdmin ||
-              isCommentedUser || presentations.presenter.id === loginUser.id
-          }
+            canShow:
+              !cm.isDirect ||
+              loginUser.isAdmin ||
+              isCommentedUser ||
+              presentations.presenter.id === loginUser.id,
+          };
         })
-        .filter((cm) => cm.canShow)
+        .filter((cm) => cm.canShow);
     },
-    prevLink () {
+    prevLink() {
       return {
-        name: 'eventDetail',
+        name: "eventDetail",
         params: {
-          id: this.presentation.eventId
-        }
+          id: this.presentation.eventId,
+        },
+      };
+    },
+    user() {
+      return this.$store.getters.user;
+    },
+  },
+  watch: {
+    dialog(val) {
+      if (!val) {
+        this.closeComment();
       }
     },
-    user () {
-      return this.$store.getters.user
-    }
   },
-  filters: {
-    toDateString (date) {
-      return moment(date).format('YYYY/MM/DD（ddd）')
-    },
-    toDateTimeString (date) {
-      return moment(date).format('YYYY/MM/DD HH:mm')
-    }
+  async created() {
+    this.unsubscribes = await this.$store.dispatch("watchStampCount", {
+      presentationId: this.id,
+    });
+  },
+  beforeUnmount() {
+    this.unsubscribes.forEach((u) => u());
+    this.$store.dispatch("clearCounts");
   },
   methods: {
-    editPresentation () {
+    editPresentation() {
       this.$router.push({
-        path: '/' +
-        this.presentation.eventId +
-        '/draftPresentations/' +
-        this.id
-      })
+        path:
+          "/" + this.presentation.eventId + "/draftPresentations/" + this.id,
+      });
     },
-    deletePresentation () {
-      if (confirm('この発表を削除します。よろしいですか？')) {
-        this.$store.dispatch('deletePresentation', this.id)
-        this.$router.push({ path: '/events/' + this.presentation.eventId })
+    deletePresentation() {
+      if (confirm("この発表を削除します。よろしいですか？")) {
+        this.$store.dispatch("deletePresentation", this.id);
+        this.$router.push({ path: "/events/" + this.presentation.eventId });
       }
     },
     /**
      * 指定したコメントの編集モーダルを開く
      * @param {string} commentId
      */
-    openModifyComment (commentId) {
-      const target = this.comments.find((c) => c.id === commentId)
+    openModifyComment(commentId) {
+      const target = this.comments.find((c) => c.id === commentId);
       if (target == null || !target.isEditable) {
-        return alert('そのコメントは編集できません！')
+        return alert("そのコメントは編集できません！");
       }
-      this.editingCommentId = commentId
-      this.comment = target.comment
-      this.isDirect = target.isDirect
-      this.dialog = true
+      this.editingCommentId = commentId;
+      this.comment = target.comment;
+      this.isDirect = target.isDirect;
+      this.dialog = true;
     },
-    validateComment (c) {
+    validateComment(c) {
       return {
         length: c.length <= 1000,
-        required: c.replace(/\s+$/mg, '').length > 0
-      }
+        required: c.replace(/\s+$/gm, "").length > 0,
+      };
     },
     /**
      * コメントを保存する
      */
-    postCommnet () {
+    postCommnet() {
       // eslint-disable-next-line no-irregular-whitespace
-      const rtrimRegex = /[ \t\f　]+$/mg
-      const com = this.comment.replace(rtrimRegex, '')
-      const res = this.validateComment(com)
+      const rtrimRegex = /[ \t\f　]+$/gm;
+      const com = this.comment.replace(rtrimRegex, "");
+      const res = this.validateComment(com);
       if (Object.values(res).every((v) => v)) {
         if (this.editingCommentId == null) {
-          this.$store.dispatch('appendComment', {
+          this.$store.dispatch("appendComment", {
             comment: com,
             presentationId: this.id,
-            isDirect: this.isDirect
-          })
+            isDirect: this.isDirect,
+          });
         } else {
-          const target = this.comments.find((c) => c.id === this.editingCommentId)
+          const target = this.comments.find(
+            (c) => c.id === this.editingCommentId
+          );
           if (target == null || !target.isEditable) {
-            return
+            return;
           }
-          this.$store.dispatch('updateComment', {
+          this.$store.dispatch("updateComment", {
             comment: com,
             isDirect: this.isDirect,
-            commentId: this.editingCommentId
-          })
+            commentId: this.editingCommentId,
+          });
         }
-        this.closeComment()
-        this.isDirect = false
+        this.closeComment();
+        this.isDirect = false;
       } else {
         this.errors = [
-          !res.length ? 'コメントは1000文字までです' : null,
-          !res.required ? 'コメントを入力してください' : null
-        ]
-          .filter((e) => e != null)
+          !res.length ? "コメントは1000文字までです" : null,
+          !res.required ? "コメントを入力してください" : null,
+        ].filter((e) => e != null);
       }
     },
-    closeComment () {
-      this.comment = ''
-      this.editingCommentId = null
-      this.errors = []
-      this.tab = 0
-      this.dialog = false
+    closeComment() {
+      this.comment = "";
+      this.editingCommentId = null;
+      this.errors = [];
+      this.tab = 0;
+      this.dialog = false;
     },
     /**
      * 指定したコメントの削除
      * @param {string} commentId
      */
-    deleteComment (commentId) {
-      const target = this.comments.find((c) => c.id === commentId)
+    deleteComment(commentId) {
+      const target = this.comments.find((c) => c.id === commentId);
       if (target == null || !target.isDeletable) {
-        return alert('そのコメントは削除できません！')
+        return alert("そのコメントは削除できません！");
       }
-      if (confirm('このコメントを削除します。よろしいですか？')) {
-        this.$store.dispatch('deleteComment', { commentId })
+      if (confirm("このコメントを削除します。よろしいですか？")) {
+        this.$store.dispatch("deleteComment", { commentId });
       }
     },
     /**
@@ -459,33 +459,25 @@ export default {
      * @param stampId
      * @returns {number}
      */
-    getStampCount (stampId) {
-      const countObj = this.$store.getters.count(stampId)
-      return countObj ? countObj.count : ''
+    getStampCount(stampId) {
+      const countObj = this.$store.getters.count(stampId);
+      return countObj ? countObj.count : "";
     },
     /**
      * スタンプのカウントをインクリメント
      * @param stampId
      */
-    countUpStamp (stampId) {
-      this.$store.dispatch('countUpStamp', { presentationId: this.id, stampId: stampId })
+    countUpStamp(stampId) {
+      this.$store.dispatch("countUpStamp", {
+        presentationId: this.id,
+        stampId: stampId,
+      });
     },
-    convertMd2Html (str) {
-      return markdownIt.render(str)
-    }
+    convertMd2Html(str) {
+      return markdownIt.render(str);
+    },
   },
-  watch: {
-    dialog (val) {
-      if (!val) {
-        this.closeComment()
-      }
-    }
-  },
-  beforeDestroy () {
-    this.unsubscribes.forEach((u) => u())
-    this.$store.dispatch('clearCounts')
-  }
-}
+};
 </script>
 
 <style scoped>

@@ -7,13 +7,19 @@
     <v-content v-else>
       <v-container fluid>
         <v-layout row>
-          <v-flex v-if="screens.length === 0" class="display-1">会場がありません。</v-flex>
+          <v-flex v-if="screens.length === 0" class="display-1"
+            >会場がありません。</v-flex
+          >
           <v-flex v-else>
             <v-list>
-              <v-list-tile v-for="screen in screens" :key="screen.id" :to="{ path: screen.id }">
+              <v-list-tile
+                v-for="screen in screens"
+                :key="screen.id"
+                :to="{ path: screen.id }"
+              >
                 <v-list-tile-content>
                   <v-list-tile-title class="title">
-                    {{ screen.name || '（名称未設定の会場）' }}
+                    {{ screen.name || "（名称未設定の会場）" }}
                   </v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
@@ -26,36 +32,37 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/firestore'
+import firebase from "firebase/app";
+import "firebase/firestore";
 
 export default {
-  name: 'select-subscreen',
-  data () {
+  name: "SelectSubscreen",
+  data() {
     return {
       isLoadong: true,
-      screens: []
-    }
+      screens: [],
+    };
   },
-  created () {
-    const firestore = firebase.firestore()
-    const screensRef = firestore.collection('screens')
+  created() {
+    const firestore = firebase.firestore();
+    const screensRef = firestore.collection("screens");
     screensRef
       .get()
       .then((querySnapshot) => {
-        const screens = []
+        const screens = [];
         querySnapshot.forEach((doc) => {
-          const d = doc.data()
+          const d = doc.data();
           screens.push({
             id: doc.id,
-            ...d
-          })
-        })
-        this.screens = screens
-        this.isLoadong = false
-      }).catch((error) => {
-        console.log('Error getting collection:', error)
+            ...d,
+          });
+        });
+        this.screens = screens;
+        this.isLoadong = false;
       })
-  }
-}
+      .catch((error) => {
+        console.log("Error getting collection:", error);
+      });
+  },
+};
 </script>
