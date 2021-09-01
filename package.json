@@ -11,42 +11,41 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "firebase": "^6.6.1",
+    "firebase": "^9.0.1",
     "firebaseui-ja": "^1.0.0",
-    "markdown-it": "^10.0.0",
-    "markdown-it-emoji": "^1.4.0",
+    "markdown-it": "^12.2.0",
+    "markdown-it-emoji": "^2.0.0",
     "markdown-it-imsize": "^2.0.1",
     "markdown-it-link-attributes": "^3.0.0",
     "markdown-it-sanitizer": "^0.4.3",
-    "material-design-icons-iconfont": "^5.0.1",
-    "moment": "^2.24.0",
-    "register-service-worker": "^1.6.2",
-    "vue": "^2.6.10",
+    "material-design-icons-iconfont": "^6.1.0",
+    "moment": "^2.29.1",
+    "register-service-worker": "^1.7.2",
+    "vue": "^2.6.14",
     "vue-qriously": "^1.1.1",
-    "vue-router": "^3.1.3",
-    "vuetify": "^1.5.18",
-    "vuex": "^3.1.1",
-    "vuexfire": "^3.1.2"
+    "vue-router": "^3.5.2",
+    "vuetify": "^2.5.8",
+    "vuex": "^3.6.2",
+    "vuexfire": "^3.2.5"
   },
   "devDependencies": {
     "@types/webpack": "^5.28.0",
-    "@vue/cli-plugin-babel": "^3.11.0",
-    "@vue/cli-plugin-eslint": "^3.11.0",
-    "@vue/cli-plugin-pwa": "^3.11.0",
-    "@vue/cli-plugin-unit-mocha": "^3.11.0",
-    "@vue/cli-service": "^3.11.0",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "@vue/test-utils": "^1.0.0-beta.29",
-    "babel-eslint": "^10.0.3",
-    "chai": "^4.2.0",
-    "eslint": "^6.4.0",
-    "eslint-plugin-vue": "^5.2.3",
-    "firebase-tools": "^7.3.2",
-    "mocha": "^6.2.2",
-    "puppeteer": "^1.20.0",
-    "ts-loader": "^8.2.0",
-    "typescript": "^4.3.5",
-    "vue-template-compiler": "^2.6.10"
+    "@vue/cli-plugin-babel": "^4.5.13",
+    "@vue/cli-plugin-eslint": "^4.5.13",
+    "@vue/cli-plugin-pwa": "^4.5.13",
+    "@vue/cli-plugin-unit-mocha": "^4.5.13",
+    "@vue/cli-service": "^4.5.13",
+    "@vue/test-utils": "^1.2.2",
+    "babel-eslint": "^10.1.0",
+    "chai": "^4.3.4",
+    "eslint": "<7.0.0",
+    "eslint-plugin-vue": "^7.17.0",
+    "firebase-tools": "^9.16.6",
+    "mocha": "^9.1.1",
+    "puppeteer": "^10.2.0",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.4.2",
+    "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {
     "root": true,
@@ -54,15 +53,16 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "@vue/standard"
+      "plugin:vue/essential"
     ],
     "rules": {},
     "parserOptions": {
       "parser": "babel-eslint"
     }
   },
-  "eslintIgnore": ["tests/**/*"],
+  "eslintIgnore": [
+    "tests/**/*"
+  ],
   "postcss": {
     "plugins": {
       "autoprefixer": {}
