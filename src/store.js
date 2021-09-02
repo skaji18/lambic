@@ -1,5 +1,4 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import { createStore } from "vuex";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
 import firebase from "firebase/app";
 import FirebaseConfig from "../firebase-config.json";
@@ -19,9 +18,7 @@ const screens = firestore.collection("screens");
 const stamps = firestore.collection("stamps");
 const stampCounts = firestore.collection("stampCounts");
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
+export default createStore({
   strict: process.env.NODE_ENV !== "production",
   state: {
     user: null,
@@ -283,7 +280,7 @@ export default new Vuex.Store({
     /*
      * 発表を削除する
      */
-    deletePresentation({ state }, presentationId) {
+    deletePresentation({ _state }, presentationId) {
       const batch = firestore.batch();
       // スタンプカウント削除
       stampCounts
@@ -334,7 +331,7 @@ export default new Vuex.Store({
     /*
      * コメントを編集する
      */
-    updateComment({ state }, { comment, isDirect, commentId }) {
+    updateComment({ _state }, { comment, isDirect, commentId }) {
       comments.doc(commentId).update({
         comment,
         isDirect,
@@ -343,13 +340,13 @@ export default new Vuex.Store({
     /*
      * コメントを削除する
      */
-    deleteComment({ state }, { commentId }) {
+    deleteComment({ _state }, { commentId }) {
       comments.doc(commentId).delete();
     },
     /*
      * screenドキュメントの表示中プレゼンテーションを更新する
      */
-    updateScreenPresentation({ state }, { screenId, presentationId }) {
+    updateScreenPresentation({ _state }, { screenId, presentationId }) {
       screens.doc(screenId).update({
         displayPresentationRef: presentations.doc(presentationId),
       });
@@ -357,7 +354,7 @@ export default new Vuex.Store({
     /*
      * screenドキュメントの表示中プレゼンテーションを削除する
      */
-    unsetScreenPresentation({ state }, screenId) {
+    unsetScreenPresentation({ _state }, screenId) {
       screens.doc(screenId).update({
         displayPresentationRef: null,
       });
@@ -404,7 +401,7 @@ export default new Vuex.Store({
         });
       return unsubscribes;
     },
-    countUpStamp({ commit }, { presentationId, stampId }) {
+    countUpStamp({ _commit }, { presentationId, stampId }) {
       const stampCount = this.getters.stampCounts.find(
         (e) => e.presentationId === presentationId && e.stampId === stampId
       );

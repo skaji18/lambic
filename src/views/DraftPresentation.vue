@@ -15,7 +15,7 @@
           <v-layout class="grey--text">
             <span class="text-truncate">{{ event.title }}</span>
             <v-spacer></v-spacer>
-            <span>{{ event.date | toDateString }}</span>
+            <span>{{ formatDate(event.date) }}</span>
           </v-layout>
         </v-card-text>
         <v-card-title>
@@ -23,7 +23,7 @@
         </v-card-title>
 
         <v-form ref="form" v-model="valid" lazy-validation>
-          <v-container fluid class="py-1 markdown__container">
+          <v-container fluid class="py-1">
             <v-layout row class="py-2">
               <v-flex xs12 md7>
                 <v-text-field
@@ -38,35 +38,14 @@
 
             <v-layout row class="py-2">
               <v-flex xs12 md7>
-                <v-tabs
-                  v-model="tab"
-                  color="grey lighten-5"
-                  grow
-                  class="markdown__tabs"
+                <v-textarea
+                  v-model="description"
+                  label="内容"
+                  outline
+                  :counter="descriptionMaxLength"
+                  :rules="descriptionRules"
                 >
-                  <v-tab>Write</v-tab>
-                  <v-tab>Preview</v-tab>
-                </v-tabs>
-                <v-tabs-items v-model="tab">
-                  <v-tab-item>
-                    <v-textarea
-                      v-model="description"
-                      label="内容"
-                      outline
-                      :counter="descriptionMaxLength"
-                      :rules="descriptionRules"
-                    >
-                    </v-textarea>
-                  </v-tab-item>
-                  <v-tab-item>
-                    <v-card flat tile height="159" class="scroll">
-                      <v-card-text
-                        class="markdown__preview"
-                        v-html="convertMd2Html(description)"
-                      ></v-card-text>
-                    </v-card>
-                  </v-tab-item>
-                </v-tabs-items>
+                </v-textarea>
               </v-flex>
             </v-layout>
 
@@ -123,18 +102,9 @@
 </template>
 <script>
 import moment from "moment";
-import markdownIt from "@/markdownIt";
 const NEW_PRESENTATION_KEYWORD = "new";
 export default {
   name: "DraftPresentation",
-  filters: {
-    /*
-     * 日付のフォーマット
-     */
-    toDateString(date) {
-      return moment(date).format("YYYY/MM/DD（ddd）");
-    },
-  },
   props: {
     eventId: {
       type: String,
@@ -142,7 +112,7 @@ export default {
     },
     id: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   data() {
@@ -168,7 +138,6 @@ export default {
           v.length <= this.descriptionMaxLength ||
           "内容は" + this.descriptionMaxLength + "文字以内にしてください。",
       ],
-      tab: 0,
     };
   },
   computed: {
@@ -208,6 +177,12 @@ export default {
     }
   },
   methods: {
+    /*
+     * 日付のフォーマット
+     */
+    formatDate(date) {
+      return moment(date).format("YYYY/MM/DD（ddd）");
+    },
     /*
      * 入力内容を登録する
      */
@@ -256,24 +231,6 @@ export default {
         this.$router.push({ path: "/presentations/" + this.id });
       }
     },
-    convertMd2Html(str) {
-      return markdownIt.render(str);
-    },
   },
 };
 </script>
-
-<style scoped>
-.scroll {
-  overflow-y: auto;
-}
-
-.markdown__preview >>> img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.markdown__container >>> .markdown__tabs {
-  margin-bottom: 2px;
-}
-</style>

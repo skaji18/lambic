@@ -4,7 +4,7 @@
       <v-card class="mb-2" color="light-green lighten-4">
         <v-card-title primary-title>
           <div>
-            <div class="grey--text mb-3">{{ event.date | toDateString }}</div>
+            <div class="grey--text mb-3">{{ formatDate(event.date) }}</div>
             <div class="headline">{{ event.title }}</div>
           </div>
         </v-card-title>
@@ -15,11 +15,11 @@
 
       <v-card v-if="event.presentations != 0">
         <v-list two-line>
-          <template v-for="(presentation, index) in event.presentations">
-            <v-list-tile
-              :key="presentation.id"
-              :to="{ path: '/presentations/' + presentation.id }"
-            >
+          <template
+            v-for="(presentation, index) in event.presentations"
+            :key="presentation.id"
+          >
+            <v-list-tile :to="{ path: '/presentations/' + presentation.id }">
               <v-list-tile-content>
                 <v-list-tile-title class="title">
                   {{ presentation.title }}
@@ -86,11 +86,6 @@
 import moment from "moment";
 export default {
   name: "EventDetail",
-  filters: {
-    toDateString(date) {
-      return moment(date).format("YYYY/MM/DD（ddd）");
-    },
-  },
   props: {
     id: {
       type: String,
@@ -109,6 +104,12 @@ export default {
     },
   },
   methods: {
+    /*
+     * 日付のフォーマット
+     */
+    formatDate(date) {
+      return moment(date).format("YYYY/MM/DD（ddd）");
+    },
     /*
      * 発表追加ボタンを押したときの挙動
      */

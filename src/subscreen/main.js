@@ -1,21 +1,14 @@
-import Vue from "vue";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import Vuetify from "vuetify";
+import { createVuetify } from "vuetify/lib/framework";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "vuetify/dist/vuetify.min.css";
-import VueQriously from "vue-qriously";
 // import './registerServiceWorker'
 import firebase from "firebase/app";
 import FirebaseConfig from "@/../firebase-config.json";
+import store from "../store";
 
 firebase.initializeApp(FirebaseConfig);
 
-Vue.use(Vuetify);
-Vue.use(VueQriously);
-Vue.config.productionTip = false;
-
-new Vue({
-  router,
-  render: (h) => h(App),
-}).$mount("#app");
+createApp(App).use(router).use(store).use(createVuetify()).mount("#app");

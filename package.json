@@ -13,11 +13,6 @@
   "dependencies": {
     "firebase": "^9.0.1",
     "firebaseui-ja": "^1.0.0",
-    "markdown-it": "^12.2.0",
-    "markdown-it-emoji": "^2.0.0",
-    "markdown-it-imsize": "^2.0.1",
-    "markdown-it-link-attributes": "^3.0.0",
-    "markdown-it-sanitizer": "^0.4.3",
     "material-design-icons-iconfont": "^6.1.0",
     "moment": "^2.29.1",
     "register-service-worker": "^1.7.2",
@@ -64,7 +59,9 @@
       "@vue/typescript",
       "plugin:prettier/recommended"
     ],
-    "rules": {},
+    "rules": {
+      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+    },
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     }

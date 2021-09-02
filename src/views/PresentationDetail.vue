@@ -6,7 +6,7 @@
           <v-layout align-center mb-2 class="grey--text">
             <span class="text-truncate">{{ event.title }}</span>
             <v-spacer></v-spacer>
-            <span>{{ event.date | toDateString }}</span>
+            <span>{{ formatDate(event.date) }}</span>
           </v-layout>
           <v-layout align-center>
             <h1 class="headline">{{ presentation.title }}</h1>
@@ -48,12 +48,7 @@
           <div v-else class="grey--text mb-3">
             （発表者情報は削除されています）
           </div>
-          <p
-            class="markdown__preview"
-            v-html="convertMd2Html(presentation.description)"
-          >
-            "
-          </p>
+          <p>{{ presentation.description }}</p>
         </v-card-text>
       </v-card>
 
@@ -106,7 +101,7 @@
                 {{ comment.userRef.name || "（削除されたユーザ）" }}
               </strong>
               <v-spacer></v-spacer>
-              <span>{{ comment.postedAt | toDateTimeString }}</span>
+              <span>{{ formatDateTime(comment.postedAt) }}</span>
               <v-menu
                 v-if="comment.isEditable || comment.isDeletable"
                 bottom
@@ -133,10 +128,7 @@
                 </v-list>
               </v-menu>
             </v-layout>
-            <p
-              class="markdown__preview"
-              v-html="convertMd2Html(comment.comment)"
-            ></p>
+            <p>{{ presentation.description }}</p>
           </v-card-text>
         </div>
         <v-card-text v-if="comments.length === 0">
@@ -158,48 +150,28 @@
         v-model="dialog"
         width="500"
       >
-        <v-btn slot="activator" fixed fab bottom right color="green">
-          <v-icon>create</v-icon>
-        </v-btn>
+        <template #activator>
+          <v-btn fixed fab bottom right color="green">
+            <v-icon>create</v-icon>
+          </v-btn>
+        </template>
 
-        <v-card v-if="user" class="markdown__container">
+        <v-card v-if="user">
           <v-card-text class="pb-1">
             <v-alert outline :value="errors.length > 0" color="error">
               <ul>
                 <li v-for="(err, i) in errors" :key="i">{{ err }}</li>
               </ul>
             </v-alert>
-            <v-tabs
+            <v-textarea
               v-if="dialog"
-              v-model="tab"
-              color="grey lighten-5"
-              grow
-              class="markdown__tabs"
-            >
-              <v-tab>Write</v-tab>
-              <v-tab>Preview</v-tab>
-            </v-tabs>
-            <v-tabs-items v-if="dialog" v-model="tab">
-              <v-tab-item>
-                <v-textarea
-                  v-if="dialog"
-                  v-model="comment"
-                  outline
-                  autofocus
-                  no-resize
-                  name="comment-input"
-                  label="input comment"
-                ></v-textarea>
-              </v-tab-item>
-              <v-tab-item>
-                <v-card flat tile height="159" class="scroll">
-                  <v-card-text
-                    class="markdown__preview"
-                    v-html="convertMd2Html(comment)"
-                  ></v-card-text>
-                </v-card>
-              </v-tab-item>
-            </v-tabs-items>
+              v-model="comment"
+              outline
+              autofocus
+              no-resize
+              name="comment-input"
+              label="input comment"
+            />
 
             <!-- 新規投稿のときのみダイレクトコメントを選択可能 -->
             <v-container
@@ -266,18 +238,9 @@
 
 <script>
 import moment from "moment";
-import markdownIt from "@/markdownIt";
 
 export default {
   name: "Presentation",
-  filters: {
-    toDateString(date) {
-      return moment(date).format("YYYY/MM/DD（ddd）");
-    },
-    toDateTimeString(date) {
-      return moment(date).format("YYYY/MM/DD HH:mm");
-    },
-  },
   props: {
     id: {
       type: String,
@@ -292,7 +255,6 @@ export default {
       isDirect: false,
       editingCommentId: null,
       errors: [],
-      tab: 0,
     };
   },
   computed: {
@@ -365,6 +327,12 @@ export default {
     this.$store.dispatch("clearCounts");
   },
   methods: {
+    formatDate(date) {
+      return moment(date).format("YYYY/MM/DD（ddd）");
+    },
+    formatDateTime(date) {
+      return moment(date).format("YYYY/MM/DD HH:mm");
+    },
     editPresentation() {
       this.$router.push({
         path:
@@ -438,7 +406,6 @@ export default {
       this.comment = "";
       this.editingCommentId = null;
       this.errors = [];
-      this.tab = 0;
       this.dialog = false;
     },
     /**
@@ -473,31 +440,15 @@ export default {
         stampId: stampId,
       });
     },
-    convertMd2Html(str) {
-      return markdownIt.render(str);
-    },
   },
 };
 </script>
 
 <style scoped>
-.scroll {
-  overflow-y: auto;
-}
-
 .sticky-top {
   position: sticky;
   top: 0;
   z-index: 1;
-}
-
-.markdown__preview >>> img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.markdown__container >>> .markdown__tabs {
-  margin-bottom: 2px;
 }
 
 .top-56 {

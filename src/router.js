@@ -1,5 +1,4 @@
-import Vue from "vue";
-import Router from "vue-router";
+import { createRouter } from "vue-router";
 import store from "./store";
 import Login from "./views/Login.vue";
 import MyPage from "./views/MyPage.vue";
@@ -11,9 +10,7 @@ import AdminScreenList from "./views/AdminScreenList.vue";
 import DraftPresentation from "./views/DraftPresentation.vue";
 import Error from "./views/Error.vue";
 
-Vue.use(Router);
-
-const router = new Router({
+const router = createRouter({
   routes: [
     {
       path: "/",
@@ -72,7 +69,7 @@ const router = new Router({
       component: Error,
     },
     {
-      path: "/*",
+      path: "/:pathMatch(.*)*",
       redirect: "/error",
     },
   ],

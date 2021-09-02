@@ -1,9 +1,8 @@
-import Vue from "vue";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import Vuetify from "vuetify";
-import VueQriously from "vue-qriously";
+import { createVuetify } from "vuetify/lib/framework";
 import moment from "moment";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "vuetify/dist/vuetify.min.css";
@@ -13,12 +12,4 @@ moment.locale("ja", {
   weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"],
 });
 
-Vue.use(Vuetify);
-Vue.use(VueQriously);
-Vue.config.productionTip = false;
-
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app");
+createApp(App).use(router).use(store).use(createVuetify()).mount("#app");

@@ -10,15 +10,11 @@
 
         <v-card>
           <v-list two-line>
-            <template v-for="(event, index) in events">
-              <v-list-tile
-                :key="event.title"
-                :to="{ path: 'events/' + event.id }"
-                class="my-2"
-              >
+            <template v-for="(event, index) in events" :key="event.title">
+              <v-list-tile :to="{ path: 'events/' + event.id }" class="my-2">
                 <v-list-tile-content>
                   <div>
-                    {{ event.date | toDateString }}
+                    {{ formatDate(event.date) }}
                     <v-chip v-if="event.isFinished" small light
                       >終了しました</v-chip
                     >
@@ -40,7 +36,6 @@
               </v-list-tile>
               <v-divider
                 v-if="index + 1 < events.length"
-                :key="event.id"
                 class="mx-2"
               ></v-divider>
             </template>

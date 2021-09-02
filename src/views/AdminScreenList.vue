@@ -11,11 +11,11 @@
 
       <v-card v-if="screens">
         <v-list>
-          <template v-for="(screen, index) in screens">
-            <v-list-tile
-              :key="screen.id + '_list'"
-              :to="{ path: 'screens/' + screen.id }"
-            >
+          <template
+            v-for="(screen, index) in screens"
+            :key="screen.id + '_list'"
+          >
+            <v-list-tile :to="{ path: 'screens/' + screen.id }">
               <v-list-tile-title :key="screen.id + '_title'" class="title ml-2">
                 <template v-if="screen.name">
                   {{ screen.name }}
