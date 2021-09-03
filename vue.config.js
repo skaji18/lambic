@@ -1,5 +1,11 @@
+const path = require("path");
+
 module.exports = {
   chainWebpack: (config) => {
+    // import 文で TypeScript ファイルを拡張子なしで扱えるようにする
+    config.resolve.extensions.store.add(".ts");
+    config.resolve.extensions.store.add(".tsx");
+    config.resolve.modules.store.add(path.resolve(__dirname, "src"));
     // firebase-loader の設定
     config.module
       .rule("firebase")
