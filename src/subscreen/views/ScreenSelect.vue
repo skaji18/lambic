@@ -3,7 +3,7 @@
     <v-toolbar app>
       <v-toolbar-title>Select Screen</v-toolbar-title>
     </v-toolbar>
-    <v-progress-linear v-if="isLoadong" indeterminate></v-progress-linear>
+    <v-progress-linear v-if="isLoading" indeterminate></v-progress-linear>
     <v-content v-else>
       <v-container fluid>
         <v-layout row>
@@ -32,37 +32,26 @@
 </template>
 
 <script>
-import firebase from "firebase/app";
-import "firebase/firestore";
+import { firestore } from "../../firebase";
+import { collection, getDocs, query } from "firebase/firestore";
 
 export default {
   name: "SelectSubscreen",
   data() {
     return {
-      isLoadong: true,
+      isLoading: true,
       screens: [],
     };
   },
-  created() {
-    const firestore = firebase.firestore();
-    const screensRef = firestore.collection("screens");
-    screensRef
-      .get()
-      .then((querySnapshot) => {
-        const screens = [];
-        querySnapshot.forEach((doc) => {
-          const d = doc.data();
-          screens.push({
-            id: doc.id,
-            ...d,
-          });
-        });
-        this.screens = screens;
-        this.isLoadong = false;
-      })
-      .catch((error) => {
-        console.log("Error getting collection:", error);
+  async created() {
+    const screens = await getDocs(query(collection(firestore, "screens")));
+    for (const screen in screens.docs()) {
+      this.screens.push({
+        id: screen.id,
+        ...screen.data(),
       });
+    }
+    this.isLoading = false;
   },
 };
 </script>

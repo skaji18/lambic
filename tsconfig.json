@@ -6,6 +6,7 @@
         "importHelpers": true,
         "esModuleInterop": true,
         "moduleResolution": "node",
+        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true, /* import Vue from 'vue';のような形式を有効にする */
         "noImplicitThis": true, /* thisの型推論を有効にする */
         "baseUrl": "./",
@@ -13,7 +14,9 @@
             "@/*": [
                 "src/*"
             ]
-        }
+        },
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
     },
     "include": [
         "src/**/*.ts",

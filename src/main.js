@@ -1,8 +1,11 @@
+import "reflect-metadata";
+import "@/persistences/firestore/tsyringe";
+
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
-import { createVuetify } from "vuetify/lib/framework";
+import { store } from "./store";
+import { createVuetify } from "vuetify/lib/entry-bundler";
 import moment from "moment";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "vuetify/dist/vuetify.min.css";
