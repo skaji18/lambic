@@ -1,10 +1,12 @@
 import moment from "moment";
+import { Presentation } from "@/models/Presentation";
 
 export class Event {
   readonly id!: string;
   title!: string;
   description!: string;
   date!: Date;
+  presentations?: Array<Presentation>;
 
   constructor(init: Partial<Event>) {
     Object.assign(this, init);

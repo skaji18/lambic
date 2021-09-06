@@ -1,5 +1,5 @@
 import { firestore } from "@/firebase";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import type {
   DocumentData,
   QueryDocumentSnapshot,
@@ -22,7 +22,6 @@ const converter = {
     options: SnapshotOptions
   ): User {
     const data = Object.assign(snapshot.data(options), { id: snapshot.id })!;
-    console.log(data);
     if (!User.isValid(data)) {
       throw new Error("invalid data");
     }
@@ -36,6 +35,11 @@ export class UserDaoImpl implements UserDao {
     const ref = doc(users, id);
     const snap = await getDoc(ref);
     return snap.data();
+  }
+
+  async getAll(): Promise<Array<User>> {
+    const snap = await getDocs(query(users));
+    return snap.docs.map((d) => d.data());
   }
 
   async add(user: User): Promise<User> {

@@ -11,7 +11,7 @@
         <v-card>
           <v-list two-line>
             <template v-for="(event, index) in events" :key="event.id">
-              <v-list-item :to="{ path: 'events/' + event.id }" class="my-2">
+              <v-list-item :to="{ path: `/events/${event.id}` }" class="my-2">
                 <v-list-item-title class="title">{{
                   event.title
                 }}</v-list-item-title>
