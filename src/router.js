@@ -1,5 +1,5 @@
-import { createRouter } from "vue-router";
-import store from "./store";
+import { createRouter, createWebHashHistory } from "vue-router";
+import { store } from "./store";
 import Login from "./views/Login.vue";
 import MyPage from "./views/MyPage.vue";
 import EventList from "./views/EventList.vue";
@@ -11,6 +11,7 @@ import DraftPresentation from "./views/DraftPresentation.vue";
 import Error from "./views/Error.vue";
 
 const router = createRouter({
+  history: createWebHashHistory(),
   routes: [
     {
       path: "/",
@@ -91,8 +92,8 @@ const router = createRouter({
  * ルーティングの前処理を行う
  */
 router.beforeEach((to, from, next) => {
-  const user = store.getters.user;
-  if (user !== null && user.isAdmin) {
+  const user = store.getters.loginUser;
+  if (user && user.isAdmin) {
     // 権限を更新する
     // 裏で管理者権限が剥奪されている可能性があるため、
     // ページ遷移時に権限を更新する必要があるが、

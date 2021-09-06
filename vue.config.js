@@ -21,6 +21,13 @@ module.exports = {
       .loader("ts-loader")
       .options({ transpileOnly: true, appendTsSuffixTo: [/\.vue$/] })
       .end();
+    // url-loader の設定
+    // assets の画像を読み込めるようにする
+    config.module
+      .rule("images")
+      .use("url-loader")
+      .options({ esModule: false })
+      .end();
   },
   pages: {
     index: {

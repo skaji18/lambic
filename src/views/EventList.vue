@@ -1,6 +1,6 @@
 <template>
   <v-layout row class="pb-5">
-    <v-flex v-if="events.length != 0">
+    <v-row v-if="events.length != 0">
       <v-card>
         <v-card color="light-green">
           <v-card-title>
@@ -11,29 +11,27 @@
         <v-card>
           <v-list two-line>
             <template v-for="(event, index) in events" :key="event.title">
-              <v-list-tile :to="{ path: 'events/' + event.id }" class="my-2">
-                <v-list-tile-content>
-                  <div>
-                    {{ formatDate(event.date) }}
-                    <v-chip v-if="event.isFinished" small light
-                      >終了しました</v-chip
-                    >
-                    <v-chip
-                      v-else-if="event.isToday"
-                      small
-                      color="green"
-                      text-color="white"
-                      >本日開催</v-chip
-                    >
-                  </div>
-                  <v-list-tile-title class="title">
-                    {{ event.title }}
-                  </v-list-tile-title>
-                  <v-list-tile-sub-title>
-                    {{ event.description }}
-                  </v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
+              <v-list-item :to="{ path: 'events/' + event.id }" class="my-2">
+                <v-list-item-title class="title">{{
+                  event.title
+                }}</v-list-item-title>
+                <v-list-item-subtitle class="title">{{
+                  event.description
+                }}</v-list-item-subtitle>
+                <div>
+                  {{ formatDate(event.date) }}
+                  <v-chip v-if="event.isFinished" small light
+                    >終了しました</v-chip
+                  >
+                  <v-chip
+                    v-else-if="event.isToday"
+                    small
+                    color="green"
+                    text-color="white"
+                    >本日開催</v-chip
+                  >
+                </div>
+              </v-list-item>
               <v-divider
                 v-if="index + 1 < events.length"
                 class="mx-2"
@@ -42,7 +40,7 @@
           </v-list>
         </v-card>
       </v-card>
-    </v-flex>
+    </v-row>
     <v-progress-linear
       v-else
       :indeterminate="events.length == 0"

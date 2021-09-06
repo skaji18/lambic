@@ -1,26 +1,34 @@
 import { createStore } from "vuex";
-import { vuexfireMutations, firestoreAction } from "vuexfire";
-import firebase from "firebase/app";
-import FirebaseConfig from "../firebase-config.json";
-import "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  doc,
+  getDoc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  writeBatch,
+  serverTimestamp,
+  increment,
+} from "firebase/firestore";
 import moment from "moment";
+import { firestore } from "@/firebase";
 
-const firebaseApp = firebase.initializeApp(FirebaseConfig);
-const firestore = firebaseApp.firestore();
-firestore.settings({});
+const users = collection(firestore, "users");
+const comments = collection(firestore, "comments");
 
-const users = firestore.collection("users");
-const permissions = firestore.collection("permissions");
-const events = firestore.collection("events");
-const presentations = firestore.collection("presentations");
-const comments = firestore.collection("comments");
-const screens = firestore.collection("screens");
-const stamps = firestore.collection("stamps");
-const stampCounts = firestore.collection("stampCounts");
+const getDocument = async (path, pathSegments) => {
+  const ref = doc(firestore, path, ...(pathSegments || []));
+  const snap = await getDoc(ref);
+  return { ref, snap };
+};
 
-export default createStore({
+export const store = createStore({
   strict: process.env.NODE_ENV !== "production",
   state: {
+    loginUser: null,
     user: null,
     events: [],
     presentations: [],
@@ -31,6 +39,9 @@ export default createStore({
     counts: [],
   },
   getters: {
+    loginUser(state) {
+      return state.loginUser;
+    },
     events(state, getters) {
       return state.events
         .map((ev) => {
@@ -85,9 +96,6 @@ export default createStore({
     screens(state) {
       return state.screens;
     },
-    user(state) {
-      return state.user;
-    },
     stamps(state) {
       return state.stamps
         .map((st) => {
@@ -123,8 +131,8 @@ export default createStore({
     },
   },
   mutations: {
-    setUser(state, payload) {
-      state.user = payload;
+    setLoginUser(state, payload) {
+      state.loginUser = payload;
     },
     updateUserInfo(state, payload) {
       state.user = Object.assign({}, state.user, payload);
@@ -143,136 +151,82 @@ export default createStore({
         state.counts.push(payload);
       }
     },
-    ...vuexfireMutations,
   },
   actions: {
-    initStore: firestoreAction(({ bindFirestoreRef }) => {
-      bindFirestoreRef("users", users);
-      bindFirestoreRef("events", events);
-      bindFirestoreRef("presentations", presentations);
-      bindFirestoreRef("comments", comments);
-      bindFirestoreRef("screens", screens);
-      bindFirestoreRef("stamps", stamps);
-      bindFirestoreRef("stampCounts", stampCounts);
-    }),
-    login({ commit }, auth) {
-      const userDoc = users.doc(auth.uid);
-      userDoc
-        .get()
-        .then((authUserInfo) => {
-          if (authUserInfo.exists) {
-            // 登録済みユーザの場合
-            // 権限情報の取得
-            permissions
-              .doc(authUserInfo.id)
-              .get()
-              .then(function (permissionInfo) {
-                const isAdmin = permissionInfo.exists
-                  ? permissionInfo.data().isAdmin
-                  : false;
-                commit("setUser", {
-                  id: authUserInfo.id,
-                  name: authUserInfo.data().name,
-                  photoURL: authUserInfo.data().photoURL,
-                  isAdmin: isAdmin,
-                });
-              });
-          } else {
-            // 未登録ユーザの場合
-            const registUserName = auth.displayName
-              ? auth.displayName
-              : auth.email.substr(0, auth.email.indexOf("@"));
-            userDoc.set({
-              name: registUserName,
-              photoURL: auth.photoURL,
-            });
-            commit("setUser", {
-              id: auth.uid,
-              name: registUserName,
-              photoURL: auth.photoURL,
-              isAdmin: false,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log("Error getting document:", error);
-        });
+    login({ commit }, { user }) {
+      commit("setLoginUser", user);
     },
     logout({ commit }) {
-      commit("setUser", null);
+      commit("setLoginUser", null);
     },
     /*
      * ユーザ情報を更新する
      */
-    updateUserInfo({ getters, commit }, userInfo) {
-      users.doc(getters.user.id).update(userInfo);
+    async updateUserInfo({ getters, commit }, userInfo) {
+      const { ref } = await getDocument("users", [getters.user.id]);
+      updateDoc(ref, userInfo);
       commit("updateUserInfo", userInfo);
     },
     /*
      * ユーザの権限情報を更新する
      */
-    updatePermission({ commit }, userId) {
-      const permissionDoc = permissions.doc(userId);
-      permissionDoc.get().then((permission) => {
-        if (permission.exists) {
-          commit("setUserIsAdmin", permission.data().isAdmin);
-        } else {
-          commit("setUserIsAdmin", false);
-        }
-      });
+    async updatePermission({ commit }, userId) {
+      const { snap } = await getDocument("permissions", [userId]);
+      const isAdmin = snap.exists() ? snap.data().isAdmin : false;
+      commit("setUserIsAdmin", isAdmin);
     },
     /*
      * 発表を新規登録する
      * @params { state }
      * @params presentationInfo
      */
-    addPresentation({ state }, presentationInfo) {
-      new Promise((resolve) => {
-        const batch = firestore.batch();
-        // 発表を追加する ///////////////////////////////////////////////////
-        const newPresentationDoc = presentations.doc();
-        batch.set(newPresentationDoc, {
-          ...presentationInfo,
-          presenter: users.doc(state.user.id),
+    async addPresentation({ state }, presentationInfo) {
+      const batch = writeBatch(firestore);
+
+      // 発表を追加する ///////////////////////////////////////////////////
+      const { ref: presentationRef } = await getDocument("presentations");
+      const { ref: userRef } = await getDocument("users", [state.user.id]);
+      batch.set(presentationRef, {
+        ...presentationInfo,
+        presenter: userRef,
+      });
+
+      // スタンプカウントを追加する ////////////////////////////////////////
+      // 有効なスタンプだけ追加
+      const usableStamps = await getDocs(
+        query(collection(firestore, "stamps"), where("canUse", "==", true))
+      );
+      for (const usableStamp in usableStamps.docs()) {
+        const { ref: stampCountRef } = await getDocument("stampCounts");
+        const maxShardNum = process.env.VUE_APP_STAMP_COUNT_SHARD_NUM;
+        batch.set(stampCountRef, {
+          presentationId: presentationRef.id,
+          stampId: usableStamp.id,
+          shardNum: maxShardNum,
         });
 
-        // スタンプカウントを追加する ////////////////////////////////////////
-        // 有効なスタンプの数だけ追加
-        stamps
-          .where("canUse", "==", true)
-          .get() // 現在有効なスタンプを取得
-          .then((canUseStamps) => {
-            canUseStamps.forEach((stampDoc) => {
-              const stampCountDoc = stampCounts.doc();
-              batch.set(stampCountDoc, {
-                presentationId: newPresentationDoc.id,
-                stampId: stampDoc.id,
-                shardNum: process.env.VUE_APP_STAMP_COUNT_SHARD_NUM,
-              });
-
-              // スタンプカウントにshardsサブコレクションを追加する ////////////////
-              const stampCountShards = stampCountDoc.collection("shards");
-              for (
-                let idx = 0;
-                idx < process.env.VUE_APP_STAMP_COUNT_SHARD_NUM;
-                idx++
-              ) {
-                batch.set(stampCountShards.doc(idx.toString()), {
-                  count: 0,
-                });
-              }
-            }); // End forEach
-            resolve(batch);
+        // スタンプカウントにshardsサブコレクションを追加する ////////////////
+        const stampCountShards = collection(
+          firestore,
+          "stampCounts",
+          stampCountRef.id,
+          "shards"
+        );
+        for (let idx = 0; idx < maxShardNum; idx++) {
+          batch.set(stampCountShards.doc(idx.toString()), {
+            count: 0,
           });
-      }).then((batch) => {
-        batch.commit();
-      });
+        }
+      }
+
+      await batch.commit();
     },
     /*
      * 発表を更新する
      */
-    updatePresentation({ state }, { presentationId, presentationInfo }) {
-      presentations.doc(presentationId).update({
+    async updatePresentation({ state }, { presentationId, presentationInfo }) {
+      const { ref } = getDocument("presentations", [presentationId]);
+      updateDoc(ref, {
         ...presentationInfo,
         presenter: users.doc(state.user.id),
       });
@@ -280,59 +234,64 @@ export default createStore({
     /*
      * 発表を削除する
      */
-    deletePresentation({ _state }, presentationId) {
-      const batch = firestore.batch();
+    async deletePresentation({ _state }, presentationId) {
+      const batch = writeBatch(firestore);
       // スタンプカウント削除
-      stampCounts
-        .where("presentationId", "==", presentationId)
-        .get()
-        .then((stampCountSnapshotList) => {
-          stampCountSnapshotList.forEach((stampCountSnapshot) => {
-            // shardsサブコレクション内ドキュメント削除
-            stampCountSnapshot.ref.get().then((stampCount) => {
-              const shardNum = stampCount.data().shardNum;
-              for (let idx = 0; idx < shardNum; idx++) {
-                batch.delete(
-                  stampCountSnapshot.ref
-                    .collection("shards")
-                    .doc(idx.toString())
-                );
-              }
-            });
-            // スタンプカウントドキュメント削除
-            batch.delete(stampCountSnapshot.ref);
-          });
-          // コメント削除
-          comments
-            .where("presentationId", "==", presentationId)
-            .get()
-            .then((commentSnapshotList) => {
-              commentSnapshotList.forEach((commentSnapshot) => {
-                batch.delete(commentSnapshot.ref);
-              });
-              // 発表削除
-              batch.delete(presentations.doc(presentationId));
-              batch.commit();
-            });
-        });
+      const stampCounts = await getDocs(
+        query(
+          collection(firestore, "stampCounts"),
+          where("presentationId", "==", presentationId)
+        )
+      );
+      for (const stampCount in stampCounts.docs()) {
+        // shardsサブコレクション内ドキュメント削除
+        const shardNum = stampCount.data().shardNum;
+        for (let idx = 0; idx < shardNum; idx++) {
+          const { ref } = await getDocument(stampCount.ref.path, [
+            "shards",
+            idx.toString(),
+          ]);
+          batch.delete(ref);
+        }
+        // スタンプカウントドキュメント削除
+        batch.delete(stampCount.ref);
+      }
+      // コメント削除
+      const comments = await getDocs(
+        query(
+          collection(firestore, "comments"),
+          where("presentationId", "==", presentationId)
+        )
+      );
+      for (const comment in comments.docs()) {
+        batch.delete(comment.ref);
+      }
+      // 発表削除
+      const { ref: presentationRef } = await getDocument("presentations", [
+        presentationId,
+      ]);
+      batch.delete(presentationRef);
+      await batch.commit();
     },
     /*
      * コメントを登録する
      */
-    appendComment({ state }, { comment, presentationId, isDirect }) {
-      comments.add({
+    async appendComment({ state }, { comment, presentationId, isDirect }) {
+      const { ref: userRef } = await getDocument("users", [state.user.id]);
+      addDoc(comments, {
         comment,
-        postedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+        postedAt: serverTimestamp(),
         presentationId,
         isDirect,
-        userRef: users.doc(state.user.id),
+        userRef,
       });
     },
     /*
      * コメントを編集する
      */
     updateComment({ _state }, { comment, isDirect, commentId }) {
-      comments.doc(commentId).update({
+      const { ref } = getDocument("comments", [commentId]);
+      updateDoc(ref, {
         comment,
         isDirect,
       });
@@ -341,84 +300,78 @@ export default createStore({
      * コメントを削除する
      */
     deleteComment({ _state }, { commentId }) {
-      comments.doc(commentId).delete();
+      const { ref } = getDocument("comments", [commentId]);
+      deleteDoc(ref);
     },
     /*
      * screenドキュメントの表示中プレゼンテーションを更新する
      */
     updateScreenPresentation({ _state }, { screenId, presentationId }) {
-      screens.doc(screenId).update({
-        displayPresentationRef: presentations.doc(presentationId),
+      const { ref } = getDocument("screens", [screenId]);
+      const { ref: displayPresentationRef } = getDocument("presentations", [
+        presentationId,
+      ]);
+      updateDoc(ref, {
+        displayPresentationRef,
       });
     },
     /*
      * screenドキュメントの表示中プレゼンテーションを削除する
      */
     unsetScreenPresentation({ _state }, screenId) {
-      screens.doc(screenId).update({
+      const { ref } = getDocument("screens", [screenId]);
+      updateDoc(ref, {
         displayPresentationRef: null,
       });
     },
     clearCounts({ commit }) {
       commit("clearCounts");
     },
-    watchStampCount({ commit }, { presentationId }) {
+    async watchStampCount({ commit }, { presentationId }) {
       // サブコレクションに対するbindFirestoreRefの適用方法が不明なため、
       // shardsの監視処理は自前で実装
-      let unsubscribes = [];
-      stampCounts
-        .where("presentationId", "==", presentationId)
-        .get()
-        .then((query) => {
-          query.docs.forEach((stampCount) => {
-            // サブコレクション`shards`を監視し、変更があれば再計算の上stateに反映する
-            const stampCountRef = stampCounts.doc(stampCount.id);
-            unsubscribes.push(
-              stampCountRef.collection("shards").onSnapshot((querySnapshot) => {
-                querySnapshot.docChanges().forEach((docChange) => {
-                  if (
-                    docChange.type === "added" ||
-                    docChange.type === "modified"
-                  ) {
-                    stampCountRef
-                      .collection("shards")
-                      .get()
-                      .then((snap) => {
-                        let totalCount = 0;
-                        snap.forEach((doc) => {
-                          totalCount += doc.data().count;
-                        });
-                        commit("setCount", {
-                          stampId: stampCount.data().stampId,
-                          count: totalCount,
-                        });
-                      });
-                  }
-                });
-              })
-            );
-          });
-        });
-      return unsubscribes;
-    },
-    countUpStamp({ _commit }, { presentationId, stampId }) {
-      const stampCount = this.getters.stampCounts.find(
-        (e) => e.presentationId === presentationId && e.stampId === stampId
+      const stampCounts = await getDocs(
+        query(
+          collection(firestore, "stampCounts"),
+          where("presentationId", "==", presentationId)
+        )
       );
-      if (stampCount) {
-        const stampCountDoc = stampCounts.doc(stampCount.id);
-        stampCountDoc.get().then((scSnap) => {
-          // 1回/秒の更新制限を回避するため
-          // shardNum個あるshardsのうち、ランダムな1個のカウントをインクリメント
-          const shardIdx = Math.floor(
-            Math.random() * scSnap.data().shardNum
-          ).toString();
-          stampCountDoc
-            .collection("shards")
-            .doc(shardIdx)
-            .update({
-              count: firebase.firestore.FieldValue.increment(1),
+      for (const stampCount in stampCounts.docs()) {
+        // サブコレクション`shards`を監視し、変更があれば再計算の上stateに反映する
+        const shards = await getDocs(
+          query(collection(firestore, stampCount.ref.path, "shards"))
+        );
+        for (const docChange in shards.docChanges()) {
+          if (docChange.type === "added" || docChange.type === "modified") {
+            commit("setCount", {
+              stampId: stampCount.data().stampId,
+              count: docChange.doc.data().count,
             });
+          }
+        }
+      }
+    },
+    async countUpStamp({ _commit }, { presentationId, stampId }) {
+      const stampCounts = await getDocs(
+        query(
+          collection(firestore, "stampCounts"),
+          where("presentationId", "==", presentationId),
+          where("stampId", "==", stampId)
+        )
+      );
+      if (stampCounts.empty()) {
+        const stampCount = stampCounts.docs()[0];
+        // 1回/秒の更新制限を回避するため
+        // shardNum個あるshardsのうち、ランダムな1個のカウントをインクリメント
+        const shardIdx = Math.floor(
+          Math.random() * stampCount.data().shardNum
+        ).toString();
+        const { ref } = await getDocument(stampCount.ref.path, [
+          "shards",
+          shardIdx,
+        ]);
+        updateDoc(ref, {
+          count: increment(1),
         });
       }
     },
