@@ -1,6 +1,6 @@
 <template>
   <v-layout row class="pb-5">
-    <v-row v-if="events.length != 0">
+    <v-row v-if="!isLoading">
       <v-card>
         <v-card color="light-green">
           <v-card-title>
@@ -10,7 +10,7 @@
 
         <v-card>
           <v-list two-line>
-            <template v-for="(event, index) in events" :key="event.title">
+            <template v-for="(event, index) in events" :key="event.id">
               <v-list-item :to="{ path: 'events/' + event.id }" class="my-2">
                 <v-list-item-title class="title">{{
                   event.title
@@ -20,55 +20,63 @@
                 }}</v-list-item-subtitle>
                 <div>
                   {{ formatDate(event.date) }}
-                  <v-chip v-if="event.isFinished" small light
+                  <v-chip v-if="event.isFinished" size="small" light
                     >終了しました</v-chip
                   >
                   <v-chip
                     v-else-if="event.isToday"
-                    small
+                    size="small"
                     color="green"
                     text-color="white"
                     >本日開催</v-chip
                   >
                 </div>
               </v-list-item>
-              <v-divider
-                v-if="index + 1 < events.length"
-                class="mx-2"
-              ></v-divider>
+              <v-divider v-if="showDivider(index)" class="mx-2"></v-divider>
             </template>
           </v-list>
         </v-card>
       </v-card>
     </v-row>
-    <v-progress-linear
-      v-else
-      :indeterminate="events.length == 0"
-    ></v-progress-linear>
+    <v-progress-linear v-else :indeterminate="isLoading"></v-progress-linear>
   </v-layout>
 </template>
 <script>
 import moment from "moment";
+import { EventService } from "@/services/EventService";
+
 export default {
-  name: "Events",
-  filters: {
-    toDateString(date) {
-      return moment(date).format("YYYY/MM/DD（ddd）");
-    },
+  data() {
+    return {
+      events: [],
+    };
   },
   computed: {
-    /*
-     * イベント一覧取得
-     */
-    events() {
+    isLoading() {
+      return this.events.length === 0;
+    },
+  },
+  async created() {
+    await this.init();
+  },
+  methods: {
+    async init() {
       const nowDate = new Date();
-      return this.$store.getters.events.map((ev) => {
+      const service = new EventService();
+      const events = await service.getAll();
+      this.events = events.map((ev) => {
         return {
           ...ev,
-          isFinished: moment(ev.date).isBefore(nowDate, "day"),
-          isToday: moment(ev.date).isSame(nowDate, "day"),
+          isFinished: ev.isFinished(nowDate),
+          isToday: ev.isToday(nowDate),
         };
       });
+    },
+    showDivider(index) {
+      return index < this.events.length - 1;
+    },
+    formatDate(date) {
+      return moment(date).format("YYYY/MM/DD（ddd）");
     },
   },
 };
