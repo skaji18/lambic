@@ -12,7 +12,7 @@ import { auth, authProvider } from "@/firebase";
 const login = () => signInWithPopup(auth, authProvider);
 
 @autoInjectable()
-export class UserUseCase {
+export class UserService {
   private userDao!: UserDao;
   private permissionDao!: PermissionDao;
 

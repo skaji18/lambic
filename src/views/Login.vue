@@ -3,12 +3,12 @@
 </template>
 
 <script>
-import { UserUseCase } from "@/useCases/UserUseCase";
+import { UserService } from "@/services/UserService";
 
 export default {
   async mounted() {
-    const userUseCase = new UserUseCase();
-    await userUseCase.login();
+    const service = new UserService();
+    await service.login();
     await this.$router.push({ path: "/" });
   },
 };
