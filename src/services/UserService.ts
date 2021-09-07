@@ -1,8 +1,7 @@
 import { autoInjectable, inject } from "tsyringe";
 
-import type { UserDao } from "@/persistences/interface/UserDao";
+import type { UserDao, PermissionDao } from "@/persistences/interface";
 import { User } from "@/models/User";
-import type { PermissionDao } from "@/persistences/interface/PermissionDao";
 
 // TODO: firebase の知識が入り込んでいるので、認証用の interface に切り出す
 import type { User as AuthUser } from "firebase/auth";
@@ -12,7 +11,7 @@ import { auth, authProvider } from "@/firebase";
 const login = () => signInWithPopup(auth, authProvider);
 
 @autoInjectable()
-export class UserUseCase {
+export class UserService {
   private userDao!: UserDao;
   private permissionDao!: PermissionDao;
 

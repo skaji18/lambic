@@ -1,6 +1,6 @@
 <template>
-  <v-layout v-if="event" row wrap class="pb-5">
-    <v-flex>
+  <v-layout v-if="!isLoading" row wrap class="pb-5">
+    <v-row>
       <v-card class="mb-2" color="light-green lighten-4">
         <v-card-title primary-title>
           <div>
@@ -13,28 +13,26 @@
         </v-card-text>
       </v-card>
 
-      <v-card v-if="event.presentations != 0">
+      <v-card v-if="presentations.length !== 0">
         <v-list two-line>
           <template
-            v-for="(presentation, index) in event.presentations"
+            v-for="(presentation, index) in presentations"
             :key="presentation.id"
           >
-            <v-list-tile :to="{ path: '/presentations/' + presentation.id }">
-              <v-list-tile-content>
-                <v-list-tile-title class="title">
-                  {{ presentation.title }}
-                </v-list-tile-title>
-                <v-list-tile-sub-title v-if="presentation.presenter">
-                  by {{ presentation.presenter.name }}
-                </v-list-tile-sub-title>
-                <v-list-tile-sub-title>
-                  {{ presentation.description }}
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+            <v-list-item :to="{ path: '/presentations/' + presentation.id }">
+              <v-list-item-title class="title">
+                {{ presentation.title }}
+              </v-list-item-title>
+              <v-list-item-subtitle v-if="presentation.presenter">
+                by {{ presentation.presenter.name }}
+              </v-list-item-subtitle>
+              <v-list-item-subtitle>
+                {{ presentation.description }}
+              </v-list-item-subtitle>
+            </v-list-item>
 
             <v-divider
-              v-if="index + 1 < event.presentations.length"
+              v-if="showDivider(index)"
               :key="presentation.id + '_divider'"
               class="mx-2 my-2"
             >
@@ -43,16 +41,16 @@
         </v-list>
       </v-card>
 
-      <v-card v-else :indeterminate="event.presentations == 0">
+      <v-card v-else>
         <v-card-text> まだ発表はありません。 </v-card-text>
       </v-card>
 
       <v-btn
         color="green"
         block
-        large
+        size="large"
         class="my-2 white--text"
-        @click="goAddPlesentation"
+        @click="goAddPresentation"
       >
         <v-icon color="white">add</v-icon>
         発表を申し込む
@@ -77,15 +75,16 @@
       <v-btn fixed fab bottom left color="green" :to="{ path: '/events' }">
         <v-icon>arrow_back</v-icon>
       </v-btn>
-    </v-flex>
+    </v-row>
   </v-layout>
-  <v-progress-linear v-else :indeterminate="event == null"></v-progress-linear>
+  <v-progress-linear v-else indeterminate />
 </template>
 
 <script>
 import moment from "moment";
+import { EventService } from "@/services/EventService";
+
 export default {
-  name: "EventDetail",
   props: {
     id: {
       type: String,
@@ -94,35 +93,40 @@ export default {
   },
   data() {
     return {
-      show: false,
       dialog: false,
+      event: null,
     };
   },
   computed: {
-    event() {
-      return this.$store.getters.event(this.id);
+    presentations() {
+      return this.event.presentations;
+    },
+    isLoading() {
+      return !this.event;
     },
   },
+  async created() {
+    await this.init();
+  },
   methods: {
-    /*
-     * 日付のフォーマット
-     */
+    async init() {
+      const useCase = new EventService();
+      this.event = await useCase.get(this.id);
+    },
+    showDivider(index) {
+      return index < this.presentations.length - 1;
+    },
     formatDate(date) {
       return moment(date).format("YYYY/MM/DD（ddd）");
     },
-    /*
-     * 発表追加ボタンを押したときの挙動
-     */
-    goAddPlesentation() {
-      if (this.$store.getters.user) {
-        // ログインしている場合は発表追加画面へ
-        this.$router.push({
-          path: "/" + this.id + "/draftPresentations/" + "new",
-        });
-      } else {
-        // 未ログインの場合はログインを促すダイアログを表示
+    goAddPresentation() {
+      if (!this.$store.getters.loginUser) {
         this.dialog = true;
+        return;
       }
+      this.$router.push({
+        path: `/${this.id}/draftPresentations/new`,
+      });
     },
   },
 };
