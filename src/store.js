@@ -6,18 +6,14 @@ import {
   doc,
   getDoc,
   getDocs,
-  addDoc,
   updateDoc,
   deleteDoc,
   writeBatch,
-  serverTimestamp,
   increment,
 } from "firebase/firestore";
-import moment from "moment";
 import { firestore } from "@/firebase";
 
 const users = collection(firestore, "users");
-const comments = collection(firestore, "comments");
 
 const getDocument = async (path, pathSegments) => {
   const ref = doc(firestore, path, ...(pathSegments || []));
@@ -29,105 +25,17 @@ export const store = createStore({
   strict: process.env.NODE_ENV !== "production",
   state: {
     loginUser: null,
-    user: null,
-    events: [],
-    presentations: [],
-    comments: [],
     screens: [],
-    stamps: [],
-    stampCounts: [],
-    counts: [],
   },
   getters: {
     loginUser(state) {
       return state.loginUser;
     },
-    events(state, getters) {
-      return state.events
-        .map((ev) => {
-          return {
-            ...ev,
-            id: ev.id,
-            date: ev.date.toDate(),
-            presentations: getters.presentations.filter(
-              (pr) => pr.eventId === ev.id
-            ),
-          };
-        })
-        .sort((a, b) => {
-          // 開催日時の降順にソート
-          return !moment(a.date).isSame(b.date)
-            ? moment(a.date).isAfter(b.date)
-              ? -1
-              : 1
-            : 0;
-        });
-    },
-    presentations(state, getters) {
-      return state.presentations.map((pr) => {
-        return {
-          ...pr,
-          id: pr.id,
-          comments: getters.comments.filter(
-            (cm) => cm.presentationId === pr.id
-          ),
-          stamps: getters.stamps,
-        };
-      });
-    },
-    comments(state) {
-      return state.comments
-        .map((cm) => {
-          return {
-            ...cm,
-            id: cm.id,
-            postedAt: cm.postedAt.toDate(),
-          };
-        })
-        .sort((a, b) => {
-          // 投稿日時の昇順にソート
-          return !moment(a.postedAt).isSame(b.postedAt)
-            ? moment(a.postedAt).isAfter(b.postedAt)
-              ? -1
-              : 1
-            : 0;
-        });
-    },
     screens(state) {
       return state.screens;
     },
-    stamps(state) {
-      return state.stamps
-        .map((st) => {
-          return {
-            ...st,
-            id: st.id,
-          };
-        })
-        .sort((a, b) => a.order - b.order);
-    },
-    stampCounts(state) {
-      return state.stampCounts.map((sc) => {
-        return {
-          ...sc,
-          id: sc.id,
-        };
-      });
-    },
-    event(state, getters) {
-      return (id) => getters.events.find((e) => e.id === id);
-    },
-    presentation(state, getters) {
-      return (id) => getters.presentations.find((e) => e.id === id);
-    },
-    comment(state, getters) {
-      return (id) => getters.comments.find((e) => e.id === id);
-    },
     screen(state, getters) {
       return (id) => getters.screens.find((e) => e.id === id);
-    },
-    count(state) {
-      return (stampId) => state.counts.find((c) => c.stampId === stampId);
     },
   },
   mutations: {
@@ -139,17 +47,6 @@ export const store = createStore({
     },
     setUserIsAdmin(state, payload) {
       state.user.isAdmin = payload;
-    },
-    clearCounts(state) {
-      state.counts.splice(0, state.counts.length);
-    },
-    setCount(state, payload) {
-      const idx = state.counts.findIndex((c) => c.stampId === payload.stampId);
-      if (idx !== -1) {
-        state.counts.splice(idx, 1, payload);
-      } else {
-        state.counts.push(payload);
-      }
     },
   },
   actions: {
@@ -274,29 +171,6 @@ export const store = createStore({
       await batch.commit();
     },
     /*
-     * コメントを登録する
-     */
-    async appendComment({ state }, { comment, presentationId, isDirect }) {
-      const { ref: userRef } = await getDocument("users", [state.user.id]);
-      addDoc(comments, {
-        comment,
-        postedAt: serverTimestamp(),
-        presentationId,
-        isDirect,
-        userRef,
-      });
-    },
-    /*
-     * コメントを編集する
-     */
-    updateComment({ _state }, { comment, isDirect, commentId }) {
-      const { ref } = getDocument("comments", [commentId]);
-      updateDoc(ref, {
-        comment,
-        isDirect,
-      });
-    },
-    /*
      * コメントを削除する
      */
     deleteComment({ _state }, { commentId }) {
@@ -323,33 +197,6 @@ export const store = createStore({
       updateDoc(ref, {
         displayPresentationRef: null,
       });
-    },
-    clearCounts({ commit }) {
-      commit("clearCounts");
-    },
-    async watchStampCount({ commit }, { presentationId }) {
-      // サブコレクションに対するbindFirestoreRefの適用方法が不明なため、
-      // shardsの監視処理は自前で実装
-      const stampCounts = await getDocs(
-        query(
-          collection(firestore, "stampCounts"),
-          where("presentationId", "==", presentationId)
-        )
-      );
-      for (const stampCount in stampCounts.docs()) {
-        // サブコレクション`shards`を監視し、変更があれば再計算の上stateに反映する
-        const shards = await getDocs(
-          query(collection(firestore, stampCount.ref.path, "shards"))
-        );
-        for (const docChange in shards.docChanges()) {
-          if (docChange.type === "added" || docChange.type === "modified") {
-            commit("setCount", {
-              stampId: stampCount.data().stampId,
-              count: docChange.doc.data().count,
-            });
-          }
-        }
-      }
     },
     async countUpStamp({ _commit }, { presentationId, stampId }) {
       const stampCounts = await getDocs(
