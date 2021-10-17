@@ -1,27 +1,27 @@
 <template>
   <v-app>
     <v-toolbar height="80" extended>
-      <v-toolbar-title class="display-3">{{
-        presentationTitle
-      }}</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-toolbar-title class="display-3">
+        {{ presentationTitle }}
+      </v-toolbar-title>
+      <v-spacer />
+      <qriously id="qrcode" class="pt-1 pb-0" :value="qrUrl" size="140" />
       <template #extension>
-        <div class="display-2 text-truncate">{{ presenterName }}</div>
+        <div class="display-2 text-truncate">
+          {{ presenterName }}
+        </div>
       </template>
     </v-toolbar>
-    <v-progress-linear
-      v-if="isLoadong"
-      :indeterminate="isLoadong"
-    ></v-progress-linear>
+    <v-progress-linear v-if="isLoadong" :indeterminate="isLoadong" />
     <v-content v-else>
       <v-container fluid>
         <v-layout row fill-height align-center justify-center>
-          <v-flex v-if="presentation === null" class="display-1"
-            >ただいま発表は行われていません。</v-flex
-          >
-          <v-flex v-else-if="stamps.length === 0" class="display-1"
-            >準備中...</v-flex
-          >
+          <v-flex v-if="presentation === null" class="display-1">
+            ただいま発表は行われていません。
+          </v-flex>
+          <v-flex v-else-if="stamps.length === 0" class="display-1">
+            準備中...
+          </v-flex>
           <template v-else>
             <v-flex v-for="stamp in stamps" :key="stamp.id" xs4 d-flex>
               <v-card flat tile class="d-flex">
@@ -41,8 +41,10 @@
         </v-layout>
       </v-container>
       <v-footer class="pa-3" app>
-        <v-spacer></v-spacer>
-        <div class="title">{{ screenName }}</div>
+        <v-spacer />
+        <div class="title">
+          {{ screenName }}
+        </div>
       </v-footer>
     </v-content>
   </v-app>
@@ -89,6 +91,12 @@ export default {
       return this.screenInfo !== null && this.screenInfo.name
         ? this.screenInfo.name
         : "（名称未設定の会場）";
+    },
+    qrUrl() {
+      return this.screenInfo !== null &&
+        this.screenInfo.displayPresentationRef !== null
+        ? `${window.location.origin}/#/presentations/${this.screenInfo.displayPresentationRef.id}`
+        : window.location.origin;
     },
   },
   watch: {
@@ -272,6 +280,9 @@ export default {
 </script>
 
 <style scoped>
+#qrcode {
+  height: 100%;
+}
 .blinking {
   animation: blink 0.2s ease-in-out infinite alternate;
 }

@@ -1,7 +1,9 @@
 import { StampCount } from "@/models/StampCount";
+import { Observable } from "rxjs";
 
 export interface StampCountDao {
-  getAllByPresentationId: (
+  listenByPresentationId: (
     presentationId: string
-  ) => Promise<Array<StampCount>>;
+  ) => Promise<Observable<StampCount[]>>;
+  countUp: (id: string) => Promise<void>;
 }

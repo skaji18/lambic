@@ -1,10 +1,18 @@
-import { createApp } from "vue";
+import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import { createVuetify } from "vuetify/lib/entry-bundler";
+import Vuetify from "vuetify";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "vuetify/dist/vuetify.min.css";
+import VueQriously from "vue-qriously";
 // import './registerServiceWorker'
-import { store } from "../store";
 
-createApp(App).use(router).use(store).use(createVuetify()).mount("#app");
+Vue.use(Vuetify);
+Vue.use(VueQriously);
+Vue.config.productionTip = false;
+
+new Vue({
+  router,
+  vuetify: new Vuetify(),
+  render: (h) => h(App),
+}).$mount("#app");

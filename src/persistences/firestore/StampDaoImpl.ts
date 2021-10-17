@@ -9,28 +9,6 @@ import type {
 import { StampDao } from "../interface";
 import { Stamp } from "@/models/Stamp";
 
-const isValid = (data: any): data is Stamp => {
-  if (!(typeof data?.id === "string")) {
-    return false;
-  }
-  if (!(typeof data?.order === "number")) {
-    return false;
-  }
-  if (!(typeof data?.canUse === "boolean")) {
-    return false;
-  }
-  if (!(typeof data?.fullPath === "string")) {
-    return false;
-  }
-  if (!(typeof data?.src === "string")) {
-    return false;
-  }
-  if (!(typeof data?.string === "string")) {
-    return false;
-  }
-  return true;
-};
-
 const converter = {
   toFirestore(stamp: Stamp): DocumentData {
     return {
@@ -48,8 +26,8 @@ const converter = {
   ): Stamp {
     const data = Object.assign(snapshot.data(options), {
       id: snapshot.id,
-    })!;
-    if (!isValid(data)) {
+    });
+    if (!Stamp.canDeserialize(data)) {
       throw new Error("invalid data");
     }
     return new Stamp(data);
@@ -58,7 +36,7 @@ const converter = {
 
 const stamps = collection(firestore, "stamps").withConverter(converter);
 export class StampDaoImpl implements StampDao {
-  async getAll(): Promise<Array<Stamp>> {
+  async findAll(): Promise<Stamp[]> {
     const snap = await getDocs(query(stamps, orderBy("order")));
     return snap.docs.map((d) => d.data());
   }

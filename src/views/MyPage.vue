@@ -13,7 +13,9 @@
           class="mx-2"
         >
           <ul>
-            <li v-for="(err, i) in errors" :key="i">{{ err }}</li>
+            <li v-for="(err, i) in errors" :key="i">
+              {{ err }}
+            </li>
           </ul>
         </v-alert>
         <v-container fluid>
@@ -28,7 +30,7 @@
                 v-model="name"
                 placeholder="ユーザ名を入力してください"
                 single-line
-              ></v-text-field>
+              />
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -50,7 +52,7 @@
     >
       更新しました。
       <v-btn flat @click="snackbar = false">
-        <v-icon color="white">close</v-icon>
+        <v-icon color="white"> close </v-icon>
       </v-btn>
     </v-snackbar>
   </v-layout>

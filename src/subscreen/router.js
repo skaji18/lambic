@@ -1,9 +1,11 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import Vue from "vue";
+import Router from "vue-router";
 import ScreenSelect from "./views/ScreenSelect.vue";
 import SubScreen from "./views/SubScreen.vue";
 
-export default createRouter({
-  history: createWebHashHistory(),
+Vue.use(Router);
+
+export default new Router({
   routes: [
     {
       path: "/",

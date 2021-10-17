@@ -1,3 +1,5 @@
+import { isNotNullish } from "@/models/util";
+
 export class User {
   readonly id!: string;
   name!: string;
@@ -8,16 +10,27 @@ export class User {
     Object.assign(this, init);
   }
 
-  static isValid?(data: any): data is User {
-    if (!(typeof data?.id === "string")) {
+  static canDeserialize?(data: unknown): data is User {
+    if (!isNotNullish(data)) {
       return false;
     }
-    if (!(typeof data?.name === "string")) {
-      return false;
-    }
-    if (!(typeof data?.photoURL === "string")) {
-      return false;
-    }
-    return true;
+    return (
+      typeof data.id === "string" &&
+      typeof data.name === "string" &&
+      typeof data.photoURL === "string"
+    );
+  }
+
+  static createDeleted?(): User {
+    return new User({
+      id: null,
+      name: null,
+      photoURL: null,
+      isAdmin: false,
+    });
+  }
+
+  isDeleted?(): boolean {
+    return this.id == null;
   }
 }

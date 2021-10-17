@@ -1,15 +1,20 @@
 import { initializeApp } from "firebase/app";
 import FirebaseConfig from "../firebase-config.json";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore } from "firebase/firestore";
 import {
   getAuth,
   GithubAuthProvider,
   browserSessionPersistence,
+  signInWithPopup,
 } from "firebase/auth";
 
 const firebaseApp = initializeApp(FirebaseConfig);
 
-export const firestore = getFirestore(firebaseApp);
+export const firestore = initializeFirestore(firebaseApp, {
+  ignoreUndefinedProperties: true,
+});
 export const auth = getAuth(firebaseApp);
 auth.setPersistence(browserSessionPersistence);
-export const authProvider = new GithubAuthProvider();
+export const login = async () =>
+  await signInWithPopup(auth, new GithubAuthProvider());
+export const logout = async () => await auth.signOut();

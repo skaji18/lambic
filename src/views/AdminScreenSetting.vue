@@ -25,8 +25,7 @@
                 box
                 label="イベントを選択してください"
                 @change="setEventsPresentations"
-              >
-              </v-select>
+              />
             </v-flex>
           </v-layout>
 
@@ -111,8 +110,7 @@
               v-if="index + 1 < selectedEvent.presentations.length"
               :key="presentation.id + '_divider'"
               class="mx-2 my-2"
-            >
-            </v-divider>
+            />
           </template>
 
           <template v-if="selectedEvent.presentations == 0">

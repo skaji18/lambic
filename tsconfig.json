@@ -1,27 +1,39 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "es2015",
-        "sourceMap": true,
+        "target": "esnext",
+        "module": "esnext",
         "importHelpers": true,
-        "esModuleInterop": true,
         "moduleResolution": "node",
         "resolveJsonModule": true,
-        "allowSyntheticDefaultImports": true, /* import Vue from 'vue';のような形式を有効にする */
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true, /* import Vue from "vue";のような形式を有効にする */
         "noImplicitThis": true, /* thisの型推論を有効にする */
+        "sourceMap": true,
         "baseUrl": "./",
+        "types": [
+            "webpack-env",
+            "jest"
+        ],
         "paths": {
             "@/*": [
                 "src/*"
             ]
         },
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable",
+            "scripthost"
+        ],
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
     "include": [
         "src/**/*.ts",
         "src/**/*.tsx",
-        "src/**/*.vue"
+        "src/**/*.vue",
+        "test/**/*.ts",
+        "test/**/*.tsx"
     ],
     "exclude": [
         "node_modules"

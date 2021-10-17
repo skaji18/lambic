@@ -1,36 +1,40 @@
 <template>
   <v-app>
     <v-navigation-drawer v-model="permanent" app fixed>
-      <v-app-bar density="compact">
-        <img :src="imagePath" class="logo" />
-        <div class="text-xs-center ml-1">
-          <v-chip
-            size="small"
-            outline
-            color="red"
-            class="text-xs-center caption"
-            >beta</v-chip
-          >
-        </div>
-      </v-app-bar>
+      <v-toolbar dense flat>
+        <v-list nav class="py-0" style="height: 100%">
+          <v-list-item :to="{ path: '/' }" style="height: 100%">
+            <img src="@/assets/logo.png" class="logo" />
+            <div class="text-xs-center ml-1">
+              <v-chip small outlined color="red" class="text-xs-center caption">
+                beta
+              </v-chip>
+            </div>
+          </v-list-item>
+        </v-list>
+      </v-toolbar>
 
-      <v-list dense nav class="mt-10">
-        <v-list-item v-if="user === null" @click="goLogin">
-          <v-list-item-avatar
-            ><v-icon>account_circle</v-icon></v-list-item-avatar
-          >
+      <v-divider />
+
+      <v-list dense nav>
+        <v-list-item v-if="user === null" :to="{ path: '/login' }">
+          <v-list-item-avatar>
+            <v-icon>account_circle</v-icon>
+          </v-list-item-avatar>
           <v-list-item-title>ログイン</v-list-item-title>
         </v-list-item>
-
-        <v-divider />
-
-        <v-list-item v-if="user !== null">
-          <v-list-item-title @click="goMyPage">{{
-            user.name
-          }}</v-list-item-title>
-          <v-list-item-subtitle @click="doLogout"
-            >ログアウト</v-list-item-subtitle
-          >
+        <v-list-item v-else>
+          <v-list-item-avatar>
+            <img :src="user.photoURL" />
+          </v-list-item-avatar>
+          <v-list-item-title @click="goMyPage">
+            {{ user.name }}
+          </v-list-item-title>
+          <v-list-item-action @click="doLogout">
+            <v-btn icon>
+              <v-icon>logout</v-icon>
+            </v-btn>
+          </v-list-item-action>
         </v-list-item>
 
         <v-divider />
@@ -62,26 +66,28 @@
           <v-divider />
         </template>
       </v-list>
+
+      <qriously id="qrcode" class="pb-4" :value="href.here" :size="150" />
     </v-navigation-drawer>
-    <v-app-bar app color="light-green" density="compact">
-      <v-app-bar-nav-icon @click="permanent = !permanent" />
+    <v-app-bar app dense color="light-green">
+      <v-app-bar-nav-icon @click="permanent = !permanent"></v-app-bar-nav-icon>
     </v-app-bar>
 
     <v-main>
       <v-container fluid>
-        <router-view></router-view>
+        <router-view />
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/firebase";
+import { UserService } from "@/services/UserService";
 
 export default {
   data() {
     return {
+      service: new UserService(),
       permanent: false,
     };
   },
@@ -92,42 +98,41 @@ export default {
         issues: process.env.VUE_APP_ISSUES_URL,
       };
     },
-    imagePath() {
-      return require("@/assets/logo.png");
-    },
     user() {
       return this.$store.getters.loginUser || null;
     },
   },
-  beforeCreate() {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.$store.dispatch("login", user);
-      }
+  created() {
+    this.service.listenAuthState((user) => {
+      this.$store.dispatch("login", user);
     });
   },
   methods: {
-    // ログイン画面へ遷移
-    goLogin() {
-      this.$router.push({ path: "/login" });
-    },
-    // ログアウト処理
     async doLogout() {
       if (confirm("ログアウトしますか？")) {
-        await auth.signOut();
-        this.$store.dispatch("logout");
+        await this.service.logout();
+        await this.$store.dispatch("logout");
       }
     },
-    // マイページ画面へ遷移
     goMyPage() {
-      this.$router.push({ path: "/myPage" });
+      this.$router.push("/myPage");
     },
   },
 };
 </script>
 
 <style scoped>
+#qrcode {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+img {
+  object-fit: contain;
+}
 .logo {
-  height: 80%;
+  height: 60%;
 }
 </style>

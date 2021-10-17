@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const firebaseTools = require("firebase-tools");
 
 module.exports = function FirebaseConfigLoader() {

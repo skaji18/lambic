@@ -1,21 +1,23 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import Vue from "vue";
+import Router from "vue-router";
 import { store } from "./store";
-import Login from "./views/Login.vue";
+import Error from "@/components/Error.vue";
+import Login from "@/components/Login.vue";
 import MyPage from "./views/MyPage.vue";
-import EventList from "./views/EventList.vue";
-import EventDetail from "./views/EventDetail.vue";
-import PresentationDetail from "./views/PresentationDetail.vue";
+import { EventDetail, EventList } from "@/components/pages/event";
+import {
+  EditPresentation,
+  PresentationDetail,
+} from "@/components/pages/presentation";
 import AdminScreenSetting from "./views/AdminScreenSetting.vue";
 import AdminScreenList from "./views/AdminScreenList.vue";
-import DraftPresentation from "./views/DraftPresentation.vue";
-import Error from "./views/Error.vue";
 
-const router = createRouter({
-  history: createWebHashHistory(),
+Vue.use(Router);
+
+const router = new Router({
   routes: [
     {
       path: "/",
-      name: "home",
       redirect: "/events",
     },
     {
@@ -40,15 +42,21 @@ const router = createRouter({
       component: EventList,
     },
     {
-      path: "/presentations/:id",
-      name: "presentationDetail",
-      component: PresentationDetail,
+      path: "/events/:eventId/presentations/new",
+      name: "newPresentation",
+      component: EditPresentation,
       props: true,
     },
     {
-      path: "/:eventId/draftPresentations/:id",
-      name: "draftPresentation",
-      component: DraftPresentation,
+      path: "/events/:eventId/presentations/:id/edit",
+      name: "editPresentation",
+      component: EditPresentation,
+      props: true,
+    },
+    {
+      path: "/events/:eventId/presentations/:id",
+      name: "presentationDetail",
+      component: PresentationDetail,
       props: true,
     },
     {
@@ -93,16 +101,6 @@ const router = createRouter({
  */
 router.beforeEach((to, from, next) => {
   const user = store.getters.loginUser;
-  if (user && user.isAdmin) {
-    // 権限を更新する
-    // 裏で管理者権限が剥奪されている可能性があるため、
-    // ページ遷移時に権限を更新する必要があるが、
-    // 全ての画面遷移時に更新を行うと、ドキュメントの読取りが毎回発生し、
-    // 読取り回数が増加するため、
-    // ここで、管理者権限が必要なページへ遷移するときのみ権限を更新する。
-    store.dispatch("updatePermission", user.id);
-  }
-
   // 権限による表示制御
   if (
     to.matched.some((record) => record.meta.needsAdmin) &&

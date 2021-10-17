@@ -11,24 +11,23 @@
 
       <v-card v-if="screens">
         <v-list>
-          <template
-            v-for="(screen, index) in screens"
-            :key="screen.id + '_list'"
-          >
-            <v-list-tile :to="{ path: 'screens/' + screen.id }">
-              <v-list-tile-title :key="screen.id + '_title'" class="title ml-2">
+          <template v-for="(screen, index) in screens">
+            <v-list-item
+              :key="screen.id + '_list'"
+              :to="{ path: 'screens/' + screen.id }"
+            >
+              <v-list-item-title class="title ml-2">
                 <template v-if="screen.name">
                   {{ screen.name }}
                 </template>
                 <template v-else> （スクリーン名未設定） </template>
-              </v-list-tile-title>
-            </v-list-tile>
+              </v-list-item-title>
+            </v-list-item>
             <v-divider
               v-if="index + 1 < screens.length"
               :key="screen.id + '_divider'"
               class="mx-2 my-2"
-            >
-            </v-divider>
+            />
           </template>
         </v-list>
       </v-card>

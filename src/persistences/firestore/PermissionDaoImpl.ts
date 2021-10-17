@@ -6,18 +6,8 @@ import type {
   SnapshotOptions,
   FirestoreDataConverter,
 } from "firebase/firestore";
-import { PermissionDao } from "../interface/PermissionDao";
+import { PermissionDao } from "../interface";
 import { Permission } from "@/models/Permission";
-
-const isValid = (data: any): data is Permission => {
-  if (!(typeof data?.id === "string")) {
-    return false;
-  }
-  if (!(typeof data?.isAdmin === "boolean")) {
-    return false;
-  }
-  return true;
-};
 
 const converter = {
   toFirestore(permission: Permission): DocumentData {
@@ -30,8 +20,8 @@ const converter = {
     snapshot: QueryDocumentSnapshot,
     options: SnapshotOptions
   ): Permission {
-    const data = Object.assign(snapshot.data(options), { id: snapshot.id })!;
-    if (!isValid(data)) {
+    const data = Object.assign(snapshot.data(options), { id: snapshot.id });
+    if (!Permission.canDeserialize(data)) {
       throw new Error("invalid data");
     }
     return new Permission(data);
@@ -42,9 +32,8 @@ const permissions = collection(firestore, "permissions").withConverter(
   converter
 );
 export class PermissionDaoImpl implements PermissionDao {
-  async get(id: string): Promise<Permission> {
-    const ref = doc(permissions, id);
-    const snap = await getDoc(ref);
+  async findById(id: string): Promise<Permission> {
+    const snap = await getDoc(doc(permissions, id));
     return snap.data();
   }
 }
