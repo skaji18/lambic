@@ -1,5 +1,6 @@
-import BaseCheckbox from "./BaseCheckbox.vue";
-import BaseTextArea from "./BaseTextArea.vue";
-import BaseTextField from "./BaseTextField.vue";
+export { default as BaseCheckbox } from "./BaseCheckbox.vue";
+export { default as BaseSelect } from "./BaseSelect.vue";
+export { default as BaseTextArea } from "./BaseTextArea.vue";
+export { default as BaseTextField } from "./BaseTextField.vue";
 
-export { BaseCheckbox, BaseTextArea, BaseTextField };
+export * from "./InputDefine";

@@ -71,6 +71,7 @@ export class CommentDaoImpl implements CommentDao {
   }
 
   async add(comment: Comment): Promise<void> {
+    comment.userRef = doc(firestore, "users", comment.getCommenter().id);
     await addDoc(comments, comment);
   }
 

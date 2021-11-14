@@ -5,7 +5,7 @@ import { Presentation } from "./Presentation";
 export class Comment {
   readonly id!: string;
   readonly presentationId!: string;
-  private readonly userRef!: Pick<User, "id">;
+  userRef!: Pick<User, "id">;
   comment!: string;
   isDirect!: boolean;
   postedAt!: Date;

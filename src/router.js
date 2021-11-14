@@ -9,8 +9,7 @@ import {
   EditPresentation,
   PresentationDetail,
 } from "@/components/pages/presentation";
-import AdminScreenSetting from "./views/AdminScreenSetting.vue";
-import AdminScreenList from "./views/AdminScreenList.vue";
+import { AdminScreenList, AdminScreenSetting } from "@/components/pages/admin";
 
 Vue.use(Router);
 
@@ -107,7 +106,7 @@ router.beforeEach((to, from, next) => {
     (user === null || !user.isAdmin)
   ) {
     // 権限がない場合はエラーページへ遷移
-    next({ name: "error" });
+    next({ path: "/error" });
   } else {
     next();
   }

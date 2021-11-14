@@ -6,6 +6,7 @@ import { PresentationDaoImpl } from "./PresentationDaoImpl";
 import { CommentDaoImpl } from "./CommentDaoImpl";
 import { StampDaoImpl } from "./StampDaoImpl";
 import { StampCountDaoImpl } from "./StampCountDaoImpl";
+import { ScreenDaoImpl } from "./ScreenDaoImpl";
 
 // DIコンテナへの登録
 container.register("UserDao", { useClass: UserDaoImpl });
@@ -15,3 +16,4 @@ container.register("PresentationDao", { useClass: PresentationDaoImpl });
 container.register("CommentDao", { useClass: CommentDaoImpl });
 container.register("StampDao", { useClass: StampDaoImpl });
 container.register("StampCountDao", { useClass: StampCountDaoImpl });
+container.register("ScreenDao", { useClass: ScreenDaoImpl });
