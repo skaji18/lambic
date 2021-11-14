@@ -1,5 +1,6 @@
 import { firestore } from "@/firebase";
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
@@ -57,6 +58,15 @@ export class PresentationDaoImpl implements PresentationDao {
       query(presentations, where("eventId", "==", eventId))
     );
     return snap.docs.map((d) => d.data());
+  }
+
+  async add(presentation: Presentation): Promise<void> {
+    presentation.presenter = doc(
+      firestore,
+      "users",
+      presentation.getPresenter().id
+    );
+    await addDoc(presentations, presentation);
   }
 
   async edit(presentation: Presentation): Promise<void> {

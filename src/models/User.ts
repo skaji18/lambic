@@ -21,6 +21,10 @@ export class User {
     );
   }
 
+  serialize?(): unknown {
+    return Object.assign({}, this);
+  }
+
   static createDeleted?(): User {
     return new User({
       id: null,

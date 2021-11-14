@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   query,
+  updateDoc,
 } from "firebase/firestore";
 import type {
   DocumentData,
@@ -51,5 +52,9 @@ export class UserDaoImpl implements UserDao {
   async add(user: User): Promise<User> {
     const ref = await addDoc(users, user);
     return this.findById(ref.id);
+  }
+
+  async edit(user: User): Promise<void> {
+    await updateDoc(doc(users, user.id), user.serialize());
   }
 }

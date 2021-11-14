@@ -3,7 +3,7 @@ import Router from "vue-router";
 import { store } from "./store";
 import Error from "@/components/Error.vue";
 import Login from "@/components/Login.vue";
-import MyPage from "./views/MyPage.vue";
+import { MyPage } from "@/components/pages/myPage";
 import { EventDetail, EventList } from "@/components/pages/event";
 import {
   EditPresentation,

@@ -10,7 +10,7 @@ export class Presentation {
   eventId!: string;
   title!: string;
   description!: string;
-  private readonly presenter!: Pick<User, "id">;
+  presenter!: Pick<User, "id">;
   isAllowComment!: boolean;
 
   event?: Event;

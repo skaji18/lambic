@@ -66,4 +66,8 @@ export class UserService {
       isAdmin: false,
     });
   }
+
+  async edit(user: User): Promise<void> {
+    await this.userDao.edit(user);
+  }
 }
