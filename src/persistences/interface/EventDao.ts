@@ -1,6 +1,6 @@
 import { Event } from "@/models/Event";
 
 export interface EventDao {
-  get: (id: string) => Promise<Event>;
-  getAll: () => Promise<Array<Event>>;
+  findById: (id: string) => Promise<Event>;
+  findAll: () => Promise<Event[]>;
 }

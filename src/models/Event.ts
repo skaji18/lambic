@@ -1,15 +1,28 @@
 import moment from "moment";
-import { Presentation } from "@/models/Presentation";
+import { Presentation } from "./Presentation";
+import { isNotNullish } from "./util";
 
 export class Event {
   readonly id!: string;
   title!: string;
   description!: string;
   date!: Date;
-  presentations?: Array<Presentation>;
+  presentations?: Presentation[];
 
   constructor(init: Partial<Event>) {
     Object.assign(this, init);
+  }
+
+  static canDeserialize?(data: unknown): data is Event {
+    if (!isNotNullish(data)) {
+      return false;
+    }
+    return (
+      typeof data.id === "string" &&
+      typeof data.title === "string" &&
+      typeof data.description === "string" &&
+      data.date instanceof Date
+    );
   }
 
   isFinished?(now: Date): boolean {

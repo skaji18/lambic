@@ -1,9 +1,11 @@
 import { Comment } from "@/models/Comment";
+import { Observable } from "rxjs";
 
 export interface CommentDao {
-  get: (id: string) => Promise<Comment>;
-  getAllByPresentationId: (presentationId: string) => Promise<Array<Comment>>;
-  add: (comment: Comment) => Promise<Comment>;
-  edit: (comment: Comment) => Promise<Comment>;
+  findById: (id: string) => Promise<Comment>;
+  findByPresentationId: (presentationId: string) => Promise<Comment[]>;
+  listenByPresentationId: (presentationId: string) => Observable<Comment[]>;
+  add: (comment: Comment) => Promise<void>;
+  edit: (comment: Comment) => Promise<void>;
   remove: (id: string) => Promise<void>;
 }

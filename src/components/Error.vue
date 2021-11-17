@@ -8,7 +8,5 @@
 </template>
 
 <script>
-export default {
-  name: "Error",
-};
+export default {};
 </script>

@@ -1,17 +1,8 @@
-import type { UserDao } from "./UserDao";
-import type { PermissionDao } from "./PermissionDao";
-import type { EventDao } from "./EventDao";
-import type { PresentationDao } from "./PresentationDao";
-import type { CommentDao } from "./CommentDao";
-import type { StampDao } from "./StampDao";
-import type { StampCountDao } from "./StampCountDao";
-
-export {
-  UserDao,
-  PermissionDao,
-  EventDao,
-  PresentationDao,
-  CommentDao,
-  StampDao,
-  StampCountDao,
-};
+export type { UserDao } from "./UserDao";
+export type { PermissionDao } from "./PermissionDao";
+export type { EventDao } from "./EventDao";
+export type { PresentationDao } from "./PresentationDao";
+export type { CommentDao } from "./CommentDao";
+export type { StampDao } from "./StampDao";
+export type { StampCountDao } from "./StampCountDao";
+export type { ScreenDao } from "./ScreenDao";

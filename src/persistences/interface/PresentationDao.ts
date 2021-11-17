@@ -1,6 +1,7 @@
 import { Presentation } from "@/models/Presentation";
 
 export interface PresentationDao {
-  get: (id: string) => Promise<Presentation>;
-  getByEventId: (eventId: string) => Promise<Array<Presentation>>;
+  findById: (id: string) => Promise<Presentation>;
+  findByEventId: (eventId: string) => Promise<Presentation[]>;
+  edit: (presentation: Partial<Presentation>) => Promise<void>;
 }

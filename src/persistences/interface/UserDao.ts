@@ -1,7 +1,8 @@
 import { User } from "@/models/User";
 
 export interface UserDao {
-  get: (id: string) => Promise<User>;
-  getAll: () => Promise<Array<User>>;
+  findById: (id: string) => Promise<User>;
+  findAll: () => Promise<User[]>;
   add: (user: User) => Promise<User>;
+  edit: (user: User) => Promise<void>;
 }

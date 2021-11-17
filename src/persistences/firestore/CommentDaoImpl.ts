@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+import { collectionData } from "rxfire/firestore";
 import { firestore } from "@/firebase";
 import {
   collection,
@@ -18,36 +20,13 @@ import type {
 } from "firebase/firestore";
 import { CommentDao } from "../interface";
 import { Comment } from "@/models/Comment";
-// import { User } from "@/models/User";
-
-const isValid = (data: any): data is Comment => {
-  if (!(typeof data?.id === "string")) {
-    return false;
-  }
-  if (!(typeof data?.presentationId === "string")) {
-    return false;
-  }
-  if (!(typeof data?.comment === "string")) {
-    return false;
-  }
-  if (!(typeof data?.isDirect === "boolean")) {
-    return false;
-  }
-  // if (!(data?.userRef instanceof User)) {
-  //   return false;
-  // }
-  if (!(data?.postedAt instanceof Date)) {
-    return false;
-  }
-  return true;
-};
 
 const converter = {
   toFirestore(comment: Comment): DocumentData {
     return {
       id: comment.id,
       presentationId: comment.presentationId,
-      userRef: comment.userRef,
+      userRef: doc(firestore, "users", comment.getCommenter().id),
       isDirect: comment.isDirect,
       comment: comment.comment,
       postedAt: comment.postedAt,
@@ -57,12 +36,13 @@ const converter = {
     snapshot: QueryDocumentSnapshot,
     options: SnapshotOptions
   ): Comment {
-    const postedAt = snapshot.data(options)?.postedAt?.toDate();
-    const data = Object.assign(snapshot.data(options), {
+    const snapData = snapshot.data(options);
+    const postedAt = snapData?.postedAt?.toDate();
+    const data = Object.assign(snapData, {
       id: snapshot.id,
       postedAt,
-    })!;
-    if (!isValid(data)) {
+    });
+    if (!Comment.canDeserialize(data)) {
       throw new Error("invalid data");
     }
     return new Comment(data);
@@ -71,30 +51,32 @@ const converter = {
 
 const comments = collection(firestore, "comments").withConverter(converter);
 export class CommentDaoImpl implements CommentDao {
-  async get(id: string): Promise<Comment> {
+  async findById(id: string): Promise<Comment> {
     const ref = doc(comments, id);
     const snap = await getDoc(ref);
     return snap.data();
   }
 
-  async getAllByPresentationId(
-    presentationId: string
-  ): Promise<Array<Comment>> {
+  async findByPresentationId(presentationId: string): Promise<Comment[]> {
     const snap = await getDocs(
       query(comments, where("presentationId", "==", presentationId))
     );
-    return snap.docs.map((d) => d.data());
+    return snap.docs.map((doc) => doc.data());
   }
 
-  async add(comment: Comment): Promise<Comment> {
-    const ref = await addDoc(comments, comment);
-    return await this.get(ref.id);
+  listenByPresentationId(presentationId: string): Observable<Comment[]> {
+    return collectionData(
+      query(comments, where("presentationId", "==", presentationId))
+    );
   }
 
-  async edit(comment: Comment): Promise<Comment> {
-    const ref = doc(comments, comment.id);
-    await updateDoc(ref, comment);
-    return await this.get(comment.id);
+  async add(comment: Comment): Promise<void> {
+    comment.userRef = doc(firestore, "users", comment.getCommenter().id);
+    await addDoc(comments, comment);
+  }
+
+  async edit(comment: Comment): Promise<void> {
+    await updateDoc(doc(comments, comment.id), comment.serialize());
   }
 
   async remove(id: string): Promise<void> {

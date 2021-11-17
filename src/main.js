@@ -1,11 +1,12 @@
 import "reflect-metadata";
 import "@/persistences/firestore/tsyringe";
 
-import { createApp } from "vue";
+import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import { store } from "./store";
-import { createVuetify } from "vuetify/lib/entry-bundler";
+import Vuetify from "vuetify";
+import VueQriously from "vue-qriously";
 import moment from "moment";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "vuetify/dist/vuetify.min.css";
@@ -15,4 +16,13 @@ moment.locale("ja", {
   weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"],
 });
 
-createApp(App).use(router).use(store).use(createVuetify()).mount("#app");
+Vue.use(Vuetify);
+Vue.use(VueQriously);
+Vue.config.productionTip = false;
+
+new Vue({
+  router,
+  store,
+  vuetify: new Vuetify(),
+  render: (h) => h(App),
+}).$mount("#app");

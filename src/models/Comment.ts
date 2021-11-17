@@ -1,20 +1,58 @@
-import { User } from "@/models/User";
-import { Presentation } from "@/models/Presentation";
+import { isNotNullish } from "./util";
+import { User } from "./User";
+import { Presentation } from "./Presentation";
 
 export class Comment {
   readonly id!: string;
   readonly presentationId!: string;
-  userRef!: Partial<User>;
+  userRef!: Pick<User, "id">;
   comment!: string;
   isDirect!: boolean;
   postedAt!: Date;
+
+  private user?: User;
   presentation?: Presentation;
 
   constructor(init: Partial<Comment>) {
     Object.assign(this, init);
   }
 
-  private isCommentedBy?(user: User): boolean {
+  static canDeserialize?(data: unknown): data is Comment {
+    if (!isNotNullish(data)) {
+      return false;
+    }
+    return (
+      typeof data.id === "string" &&
+      typeof data.presentationId === "string" &&
+      typeof data.comment === "string" &&
+      typeof data.isDirect === "boolean" &&
+      // && data.userRef instanceof User
+      data.postedAt instanceof Date
+    );
+  }
+
+  serialize?(): unknown {
+    const result = Object.assign({}, this);
+    delete result.user;
+    delete result.presentation;
+    return result;
+  }
+
+  static create?(data: Partial<Comment>): Comment {
+    const entity = new Comment(data);
+    entity.postedAt = new Date();
+    return entity;
+  }
+
+  getCommenter?(): User {
+    return this.user || User.createDeleted();
+  }
+
+  setCommenter?(user: User): void {
+    this.user = user;
+  }
+
+  isCommentedBy?(user: User): boolean {
     return this.userRef.id === user.id;
   }
 
@@ -24,7 +62,7 @@ export class Comment {
       return true;
     }
     // 発表者はすべてのコメントを確認できる
-    if (this.presentation.presenter.id === user.id) {
+    if (this.presentation.isPresentedBy(user)) {
       return true;
     }
     // コメントしたユーザー自身はコメントを確認できる

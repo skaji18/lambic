@@ -9,7 +9,7 @@ export default {
   async mounted() {
     const service = new UserService();
     await service.login();
-    await this.$router.push({ path: "/" });
+    await this.$router.back();
   },
 };
 </script>
