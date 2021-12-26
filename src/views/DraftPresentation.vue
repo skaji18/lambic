@@ -29,7 +29,7 @@
                 <v-text-field
                   v-model="title"
                   label="タイトル"
-                  outline
+                  outlined
                   :rules="titleRules"
                   required
                 ></v-text-field>
@@ -52,7 +52,7 @@
                     <v-textarea
                       v-model="description"
                       label="内容"
-                      outline
+                      outlined
                       :counter="descriptionMaxLength"
                       :rules="descriptionRules"
                     >

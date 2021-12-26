@@ -6,7 +6,7 @@
           <div class="headline">アカウント情報</div>
         </v-card-title>
         <v-alert
-          outline
+          outlined
           transition="scale-transition"
           :value="errors.length > 0"
           color="error"

@@ -165,7 +165,7 @@
         <v-card v-if="user" class="markdown__container">
           <v-card-text class="pb-1">
             <v-alert
-              outline
+              outlined
               :value="errors.length > 0"
               color="error"
             >
@@ -190,7 +190,7 @@
               <v-tab-item>
                 <v-textarea
                   v-if="dialog"
-                  outline
+                  outlined
                   autofocus
                   no-resize
                   name="comment-input"

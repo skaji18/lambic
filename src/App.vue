@@ -6,7 +6,7 @@
           <v-list-item :to="{ name: 'home' }">
             <img :src="imagePath('logo\.png')" class="logo">
             <div class="text-xs-center ml-1">
-              <v-chip small outline color="red" class="text-xs-center caption">beta</v-chip>
+              <v-chip small outlined color="red" class="text-xs-center caption">beta</v-chip>
             </div>
           </v-list-item>
         </v-list>
