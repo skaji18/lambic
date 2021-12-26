@@ -19,20 +19,20 @@
         <v-list two-line>
           <template v-for="(presentation, index) in event.presentations">
 
-            <v-list-tile :key="presentation.id" :to="{ path: '/presentations/' + presentation.id }">
+            <v-list-item :key="presentation.id" :to="{ path: '/presentations/' + presentation.id }">
 
-              <v-list-tile-content>
-                <v-list-tile-title class="title">
+              <v-list-item-content>
+                <v-list-item-title class="title">
                   {{ presentation.title }}
-                </v-list-tile-title>
-                <v-list-tile-sub-title v-if="presentation.presenter">
+                </v-list-item-title>
+                <v-list-item-subtitle v-if="presentation.presenter">
                   by {{ presentation.presenter.name }}
-                </v-list-tile-sub-title>
-                <v-list-tile-sub-title>
+                </v-list-item-subtitle>
+                <v-list-item-subtitle>
                   {{ presentation.description }}
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
 
             <v-divider v-if="index+1 < event.presentations.length"
               :key="presentation.id + '_divider'"

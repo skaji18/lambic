@@ -3,12 +3,12 @@
     <v-navigation-drawer app fixed v-model="permanent">
       <v-toolbar flat>
         <v-list class="py-0">
-          <v-list-tile :to="{ name: 'home' }">
+          <v-list-item :to="{ name: 'home' }">
             <img :src="imagePath('logo\.png')" class="logo">
             <div class="text-xs-center ml-1">
               <v-chip small outline color="red" class="text-xs-center caption">beta</v-chip>
             </div>
-          </v-list-tile>
+          </v-list-item>
         </v-list>
       </v-toolbar>
 
@@ -16,71 +16,71 @@
 
       <v-list dense class="pt-0">
 
-        <v-list-tile v-if="user" class="my-2">
+        <v-list-item v-if="user" class="my-2">
           <button type="button" @click="goMyPage">
-            <v-list-tile-avatar>
+            <v-list-item-avatar>
               <img v-bind:src="user.photoURL">
-            </v-list-tile-avatar>
+            </v-list-item-avatar>
           </button>
-          <v-list-tile-content>
-            <v-list-tile-title @click="goMyPage" id="userName">
+          <v-list-item-content>
+            <v-list-item-title @click="goMyPage" id="userName">
               <button type="button">{{ user.name }}</button>
-            </v-list-tile-title>
-            <v-list-tile-sub-title>
+            </v-list-item-title>
+            <v-list-item-subtitle>
               <button type="button" @click="doLogout">ログアウト</button>
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
 
-        <v-list-tile v-else class="my-2">
-          <v-list-tile-avatar>
+        <v-list-item v-else class="my-2">
+          <v-list-item-avatar>
             <v-icon x-large color="light-green">account_circle</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title id="userName">ゲストユーザ</v-list-tile-title>
-            <v-list-tile-sub-title>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title id="userName">ゲストユーザ</v-list-item-title>
+            <v-list-item-subtitle>
               <button type="button" @click="goLogin">ログイン</button>
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
 
         <v-divider></v-divider>
 
-        <v-list-tile :to="{ path: '/events' }">
-          <v-list-tile-action>
+        <v-list-item :to="{ path: '/events' }">
+          <v-list-item-action>
             <v-icon>view_list</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>イベント一覧</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>イベント一覧</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-divider></v-divider>
 
-        <v-list-tile
+        <v-list-item
           :href="href.issues"
           target="_blank">
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-icon>feedback</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>フィードバック</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>フィードバック</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-divider></v-divider>
 
         <template v-if="user && user.isAdmin">
-          <v-list-tile>
+          <v-list-item>
             <strong>管理者メニュー</strong>
-          </v-list-tile>
+          </v-list-item>
 
-          <v-list-tile :to="{name: 'adminScreenList' }">
-            <v-list-tile-action>
+          <v-list-item :to="{name: 'adminScreenList' }">
+            <v-list-item-action>
               <v-icon>cast</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>スクリーンの設定</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>スクリーンの設定</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
           <v-divider></v-divider>
         </template>

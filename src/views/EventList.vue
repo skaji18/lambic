@@ -13,21 +13,21 @@
           <v-list two-line>
             <template v-for="(event, index) in events">
 
-                <v-list-tile :key="event.title" :to="{ path: 'events/' + event.id }" class="my-2">
-                  <v-list-tile-content>
+                <v-list-item :key="event.title" :to="{ path: 'events/' + event.id }" class="my-2">
+                  <v-list-item-content>
                     <div>
                       {{ event.date | toDateString }}
                       <v-chip v-if="event.isFinished" small light>終了しました</v-chip>
                       <v-chip v-else-if="event.isToday" small color="green" text-color="white">本日開催</v-chip>
                     </div>
-                    <v-list-tile-title class="title">
+                    <v-list-item-title class="title">
                       {{ event.title }}
-                    </v-list-tile-title>
-                    <v-list-tile-sub-title>
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
                       {{ event.description }}
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </v-list-tile>
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
                 <v-divider v-if="index + 1 < events.length" :key="event.id" class="mx-2"></v-divider>
             </template>
           </v-list>

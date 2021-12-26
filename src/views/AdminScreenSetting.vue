@@ -76,12 +76,12 @@
         <v-list two-line>
 
           <template v-for="(presentation, index) in selectedEvent.presentations">
-            <v-list-tile
+            <v-list-item
               v-if="presentation.id"
               @click="selectPresentation(presentation)"
               :key="presentation.id + '_list'"
               class="my-2">
-              <v-list-tile-avatar :key="presentation.id + '_avatar'">
+              <v-list-item-avatar :key="presentation.id + '_avatar'">
                 <v-icon v-if="screen.displayPresentationRef && presentation.id == screen.displayPresentationRef.id"
                   x-large
                   color="orange lighten-1">
@@ -92,16 +92,16 @@
                   color="grey lighten-1">
                   cast
                 </v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title :key="presentation.id + '_title'">
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title :key="presentation.id + '_title'">
                   {{ presentation.title }}
-                </v-list-tile-title>
-                <v-list-tile-sub-title v-if="presentation.presenter" :key="presentation.id + '_subtitle'">
+                </v-list-item-title>
+                <v-list-item-subtitle v-if="presentation.presenter" :key="presentation.id + '_subtitle'">
                   by {{ presentation.presenter.name }}
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
             <v-divider
               v-if="index+1 < selectedEvent.presentations.length"
               :key="presentation.id + '_divider'"

@@ -26,17 +26,17 @@
               </v-btn>
             </template>
             <v-list class="px-2">
-              <v-list-tile @click="editPresentation">
-                <v-list-tile-title>
+              <v-list-item @click="editPresentation">
+                <v-list-item-title>
                   <v-icon class="mr-1">edit</v-icon>編集する
-                </v-list-tile-title>
-              </v-list-tile>
+                </v-list-item-title>
+              </v-list-item>
               <v-divider class="mx-2"></v-divider>
-              <v-list-tile @click="deletePresentation">
-                <v-list-tile-title>
+              <v-list-item @click="deletePresentation">
+                <v-list-item-title>
                   <v-icon class="mr-1">delete_forever</v-icon>削除する
-                </v-list-tile-title>
-              </v-list-tile>
+                </v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-menu>
 
@@ -113,12 +113,12 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-tile v-if="comment.isEditable" @click="openModifyComment(comment.id)">
-                    <v-list-tile-title>編集</v-list-tile-title>
-                  </v-list-tile>
-                  <v-list-tile v-if="comment.isDeletable" @click="deleteComment(comment.id)">
-                    <v-list-tile-title>削除</v-list-tile-title>
-                  </v-list-tile>
+                  <v-list-item v-if="comment.isEditable" @click="openModifyComment(comment.id)">
+                    <v-list-item-title>編集</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item v-if="comment.isDeletable" @click="deleteComment(comment.id)">
+                    <v-list-item-title>削除</v-list-item-title>
+                  </v-list-item>
                 </v-list>
               </v-menu>
             </v-layout>

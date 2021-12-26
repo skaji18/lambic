@@ -13,18 +13,18 @@
         <v-list>
 
           <template v-for="(screen, index) in screens">
-            <v-list-tile
+            <v-list-item
               :to="{ path: 'screens/' + screen.id }"
               :key="screen.id + '_list'">
-              <v-list-tile-title class="title ml-2" :key="screen.id + '_title'">
+              <v-list-item-title class="title ml-2" :key="screen.id + '_title'">
                 <template v-if="screen.name">
                   {{ screen.name }}
                 </template>
                 <template v-else>
                   （スクリーン名未設定）
                 </template>
-              </v-list-tile-title>
-            </v-list-tile>
+              </v-list-item-title>
+            </v-list-item>
             <v-divider
               v-if="index+1 < screens.length"
               :key="screen.id + '_divider'"
