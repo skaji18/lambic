@@ -1,12 +1,12 @@
 <template>
 
-  <v-layout v-if="event" row wrap class="pb-5">
+  <v-layout v-if="event" wrap class="pb-5">
     <v-flex>
       <v-card class="mb-2" color="light-green lighten-4">
         <v-card-title primary-title>
           <div>
             <div class="grey--text mb-3">{{ event.date | toDateString }}</div>
-            <div class="headline">{{ event.title }}</div>
+            <div class="text-h5">{{ event.title }}</div>
           </div>
         </v-card-title>
         <v-card-text>
@@ -22,7 +22,7 @@
             <v-list-item :key="presentation.id" :to="{ path: '/presentations/' + presentation.id }">
 
               <v-list-item-content>
-                <v-list-item-title class="title">
+                <v-list-item-title class="text-h6">
                   {{ presentation.title }}
                 </v-list-item-title>
                 <v-list-item-subtitle v-if="presentation.presenter">
@@ -66,8 +66,8 @@
         width="500"
       >
         <v-card>
-          <v-card-text class="text-xs-center">
-            <p class="title mt-3">発表登録にはログインが必要です。</p>
+          <v-card-text class="text-center">
+            <p class="text-h6 mt-3">発表登録にはログインが必要です。</p>
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn
@@ -77,7 +77,7 @@
               ログインする
             </v-btn>
           </v-card-actions>
-          <v-card-text class="text-xs-center">
+          <v-card-text class="text-center">
             <p>ログインして発表を申し込みましょう。</p>
           </v-card-text>
         </v-card>

@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap class="pb-5">
+  <v-layout wrap class="pb-5">
     <v-flex>
       <v-card>
         <v-card-title primary-title>
-          <div class="headline">アカウント情報</div>
+          <div class="text-h5">アカウント情報</div>
         </v-card-title>
         <v-alert
           outlined
@@ -17,12 +17,12 @@
           </ul>
         </v-alert>
         <v-container fluid>
-          <v-layout row>
+          <v-layout>
             <v-flex xs12>
               <strong>ユーザ名</strong>
             </v-flex>
           </v-layout>
-          <v-layout row>
+          <v-layout>
             <v-flex xs12 md5>
               <v-text-field
                 v-model="name"
@@ -31,7 +31,7 @@
               ></v-text-field>
             </v-flex>
           </v-layout>
-          <v-layout row>
+          <v-layout>
             <v-flex xs12 md6>
               <v-btn @click="updateUserInfo" color="green" class="white--text">
                 更新する
@@ -49,7 +49,7 @@
       color=green
     >
       更新しました。
-      <v-btn flat @click="snackbar = false">
+      <v-btn text @click="snackbar = false">
         <v-icon color="white">close</v-icon>
       </v-btn>
     </v-snackbar>

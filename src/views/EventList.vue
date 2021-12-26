@@ -1,11 +1,11 @@
 <template>
-  <v-layout row class="pb-5">
+  <v-layout class="pb-5">
     <v-flex v-if="events.length != 0">
       <v-card>
 
         <v-card color="light-green">
           <v-card-title>
-            <h1 class="headline white--text">イベント一覧</h1>
+            <h1 class="text-h5 white--text">イベント一覧</h1>
           </v-card-title>
         </v-card>
 
@@ -20,7 +20,7 @@
                       <v-chip v-if="event.isFinished" small light>終了しました</v-chip>
                       <v-chip v-else-if="event.isToday" small color="green" text-color="white">本日開催</v-chip>
                     </div>
-                    <v-list-item-title class="title">
+                    <v-list-item-title class="text-h6">
                       {{ event.title }}
                     </v-list-item-title>
                     <v-list-item-subtitle>

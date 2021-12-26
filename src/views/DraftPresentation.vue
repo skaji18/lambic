@@ -1,8 +1,7 @@
 <template>
   <v-layout v-if="event &&
     user &&
-    (isNewPresentation || (presentation && user.id == presentation.presenter.id))"
-    row class="pb-5">
+    (isNewPresentation || (presentation && user.id == presentation.presenter.id))" class="pb-5">
     <v-flex>
 
       <v-card class="mb-2">
@@ -14,7 +13,7 @@
           </v-layout>
         </v-card-text>
         <v-card-title>
-          <h1 class="headline">発表登録</h1>
+          <h1 class="text-h5">発表登録</h1>
         </v-card-title>
 
         <v-form
@@ -24,7 +23,7 @@
         >
           <v-container fluid class="py-1 markdown__container">
 
-            <v-layout row class="py-2">
+            <v-layout class="py-2">
               <v-flex xs12 md7>
                 <v-text-field
                   v-model="title"
@@ -36,7 +35,7 @@
               </v-flex>
             </v-layout>
 
-            <v-layout row class="py-2">
+            <v-layout class="py-2">
               <v-flex xs12 md7>
                 <v-tabs
                   v-model="tab"
@@ -72,7 +71,7 @@
               </v-flex>
             </v-layout>
 
-            <v-layout row class="py-2">
+            <v-layout class="py-2">
               <v-flex xs12 md7>
                 発表へのコメント投稿を許可する。
                 <v-switch
@@ -86,7 +85,7 @@
               </v-flex>
             </v-layout>
 
-            <v-layout row class="py-2">
+            <v-layout class="py-2">
               <v-flex xs12 md7>
                 <v-checkbox
                   v-model="checkConfidential"

@@ -1,5 +1,5 @@
 <template>
-  <v-layout row class="pb-5">
+  <v-layout class="pb-5">
     <v-flex>
 
       <v-card class="mb-2 pb-2">
@@ -14,19 +14,19 @@
                 （スクリーン名未設定）
               </template>
             </div>
-            <h3 class="headline mb-0">スクリーンの管理</h3>
+            <h3 class="text-h5 mb-0">スクリーンの管理</h3>
           </div>
         </v-card-title>
 
         <v-container grid-list-md class="py-0">
-          <v-layout row wrap>
+          <v-layout wrap>
             <v-flex xs12 sm8>
               <v-select
               :items="events"
               name="event"
               item-text="title"
               item-value="id"
-              box
+              filled
               label="イベントを選択してください"
               @change="setEventsPresentations"
               >
@@ -34,7 +34,7 @@
             </v-flex>
           </v-layout>
 
-          <v-layout row wrap>
+          <v-layout wrap>
             <v-flex xs12 sm9 xl11>
 
               <v-card-title class="px-0 py-0" >
@@ -60,7 +60,7 @@
               </v-card-title>
             </v-flex>
           </v-layout>
-          <v-layout row wrap>
+          <v-layout wrap>
             <v-flex xs12>
               <v-card-actions class="px-0">
                 <v-btn small color="grey lighten-1" @click="initializeScreen()">

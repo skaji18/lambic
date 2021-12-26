@@ -1,5 +1,5 @@
 <template>
-  <v-layout row class="pb-5">
+  <v-layout class="pb-5">
     <v-flex v-if="presentation != null">
 
       <v-card>
@@ -10,7 +10,7 @@
             <span>{{ event.date | toDateString }}</span>
           </v-layout>
           <v-layout align-center>
-          <h1 class="headline">{{ presentation.title }}</h1>
+          <h1 class="text-h5">{{ presentation.title }}</h1>
           <v-spacer></v-spacer>
 
           <v-menu
@@ -60,7 +60,7 @@
             @click="countUpStamp(stamp.id)"
             color="light-green"
             text-color="white"
-            class="text-xs-center"
+            class="text-center"
             label
           >
             <v-avatar v-if="stamp.src" tile color="grey lighten-3">
@@ -212,7 +212,7 @@
 
             <!-- 新規投稿のときのみダイレクトコメントを選択可能 -->
             <v-container v-if="this.editingCommentId === null" grid-list-md class="px-0 py-0">
-              <v-layout wrap row>
+              <v-layout wrap>
                 <v-flex shrink>
                   <v-checkbox
                     v-model="isDirect"
@@ -249,7 +249,7 @@
             </v-btn>
             <v-btn
               color="primary"
-              flat
+              text
               @click="closeComment"
             >
               cancel
@@ -257,8 +257,8 @@
           </v-card-actions>
         </v-card>
         <v-card v-else>
-          <v-card-text class="text-xs-center">
-            <p class="title mt-3">コメントしてみませんか？</p>
+          <v-card-text class="text-center">
+            <p class="text-h6 mt-3">コメントしてみませんか？</p>
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn
@@ -268,7 +268,7 @@
               ログインする
             </v-btn>
           </v-card-actions>
-          <v-card-text class="text-xs-center">
+          <v-card-text class="text-center">
             <p>ログインすると発表にコメントできます。</p>
           </v-card-text>
         </v-card>

@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint --fix",
     "test:integration": "mocha tests/integration/bootstrap.js --recursive tests/integration --timeout 0",
     "test:unit": "vue-cli-service test:unit"
   },
@@ -58,6 +58,7 @@
       "parser": "babel-eslint"
     }
   },
+  "eslintIgnore": [ "tests/**/*.js" ],
   "postcss": {
     "plugins": {
       "autoprefixer": {}

@@ -2,7 +2,7 @@
   <div>
     <v-layout justify-center>
       <v-card-title>
-        <h1 class="headline mb-0">ログイン</h1>
+        <h1 class="text-h5 mb-0">ログイン</h1>
       </v-card-title>
     </v-layout>
     <div id="firebaseui-auth-container"></div>

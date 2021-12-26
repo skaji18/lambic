@@ -4,8 +4,8 @@
       <v-toolbar dense flat>
         <v-list-item dense @click="goHome">
           <img :src="imagePath">
-          <div class="text-xs-center ml-1">
-            <v-chip small outlined color="red" class="text-xs-center caption">beta</v-chip>
+          <div class="text-center ml-1">
+            <v-chip small outlined color="red" class="text-center text-caption">beta</v-chip>
           </div>
         </v-list-item>
       </v-toolbar>

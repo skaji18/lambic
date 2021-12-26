@@ -1,24 +1,23 @@
 <template>
   <v-app>
     <v-toolbar height="80" extended>
-      <v-toolbar-title class="display-3">{{ presentationTitle }}</v-toolbar-title>
+      <v-toolbar-title class="text-h2">{{ presentationTitle }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <qriously id="qrcode" class="pt-1 pb-0" :value="qrUrl" size="140"/>
       <template v-slot:extension>
-        <div class="display-2 text-truncate">{{ presenterName }}</div>
+        <div class="text-h3 text-truncate">{{ presenterName }}</div>
       </template>
     </v-toolbar>
     <v-progress-linear v-if="isLoadong" :indeterminate="isLoadong"></v-progress-linear>
-    <v-content v-else>
+    <v-main v-else>
       <v-container fluid>
         <v-layout
-          row
           fill-height
           align-center
           justify-center
         >
-          <v-flex v-if="presentation === null" class="display-1">ただいま発表は行われていません。</v-flex>
-          <v-flex v-else-if="stamps.length === 0" class="display-1">準備中...</v-flex>
+          <v-flex v-if="presentation === null" class="text-h4">ただいま発表は行われていません。</v-flex>
+          <v-flex v-else-if="stamps.length === 0" class="text-h4">準備中...</v-flex>
           <template v-else>
             <v-flex
               v-for="stamp in stamps"
@@ -39,9 +38,9 @@
       </v-container>
       <v-footer class="pa-3" app>
         <v-spacer></v-spacer>
-        <div class="title">{{ screenName }}</div>
+        <div class="text-h6">{{ screenName }}</div>
       </v-footer>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
