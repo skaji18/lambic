@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-toolbar app>
+    <v-app-bar app>
       <v-toolbar-title>Select Screen</v-toolbar-title>
-    </v-toolbar>
+    </v-app-bar>
     <v-progress-linear v-if="isLoadong" indeterminate></v-progress-linear>
     <v-content v-else>
       <v-container fluid>
