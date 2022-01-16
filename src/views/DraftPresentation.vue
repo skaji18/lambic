@@ -1,8 +1,5 @@
 <template>
-  <v-layout v-if="event &&
-    user &&
-    (isNewPresentation || (presentation && user.id == presentation.presenter.id))"
-    row class="pb-5">
+  <v-layout v-if="!isLoading && canEdit" class="pb-5">
     <v-flex>
 
       <v-card class="mb-2">
@@ -14,7 +11,7 @@
           </v-layout>
         </v-card-text>
         <v-card-title>
-          <h1 class="headline">発表登録</h1>
+          <h1 class="text-h5">発表登録</h1>
         </v-card-title>
 
         <v-form
@@ -24,35 +21,36 @@
         >
           <v-container fluid class="py-1 markdown__container">
 
-            <v-layout row class="py-2">
+            <v-layout class="py-2">
               <v-flex xs12 md7>
                 <v-text-field
                   v-model="title"
                   label="タイトル"
-                  outline
+                  outlined
+                  dense
                   :rules="titleRules"
                   required
-                ></v-text-field>
+                />
               </v-flex>
             </v-layout>
 
-            <v-layout row class="py-2">
+            <v-layout class="py-2">
               <v-flex xs12 md7>
                 <v-tabs
                   v-model="tab"
-                  color="grey lighten-5"
                   grow
-                  class="markdown__tabs"
                 >
                   <v-tab>Write</v-tab>
                   <v-tab>Preview</v-tab>
                 </v-tabs>
-                <v-tabs-items v-model="tab">
+                <v-tabs-items v-model="tab" class="pa-2">
                   <v-tab-item>
                     <v-textarea
                       v-model="description"
                       label="内容"
-                      outline
+                      outlined
+                      dense
+                      no-resize
                       :counter="descriptionMaxLength"
                       :rules="descriptionRules"
                     >
@@ -62,23 +60,24 @@
                     <v-card
                       flat
                       tile
-                      height="159"
+                      height="196"
                       class="scroll"
                     >
-                      <v-card-text class="markdown__preview"  v-html="convertMd2Html(description)"></v-card-text>
+                      <v-card-text class="markdown__preview"  v-html="convertMd2Html(description)" />
                     </v-card>
                   </v-tab-item>
                 </v-tabs-items>
               </v-flex>
             </v-layout>
 
-            <v-layout row class="py-2">
+            <v-layout class="py-2">
               <v-flex xs12 md7>
                 発表へのコメント投稿を許可する。
                 <v-switch
                   v-model="isAllowComment"
                   :label="`${ isAllowComment ? 'はい' : 'いいえ' }`"
                   color="green"
+                  dense
                   hide-details
                   class="pt-0 mt-1"
                 >
@@ -86,11 +85,12 @@
               </v-flex>
             </v-layout>
 
-            <v-layout row class="py-2">
+            <v-layout class="py-2">
               <v-flex xs12 md7>
                 <v-checkbox
                   v-model="checkConfidential"
                   color="green"
+                  dense
                   required
                 >
                   <template v-slot:label>
@@ -130,15 +130,15 @@
 
     </v-flex>
   </v-layout>
-  <v-progress-linear v-else :indeterminate="event !== null && presentation !== null">
-  </v-progress-linear>
+  <v-progress-linear v-else indeterminate />
 </template>
+
 <script>
 import moment from 'moment'
 import markdownIt from '@/markdownIt'
+
 const NEW_PRESENTATION_KEYWORD = 'new'
 export default {
-  name: 'draftPresentation',
   props: {
     eventId: {
       type: String,
@@ -151,7 +151,6 @@ export default {
   },
   data () {
     return {
-      isNewPresentation: false,
       valid: true,
       title: '', // 入力する発表タイトル
       titleMaxLength: 50, // 発表タイトル最大文字数
@@ -172,7 +171,6 @@ export default {
     }
   },
   created () {
-    this.isNewPresentation = this.id === NEW_PRESENTATION_KEYWORD
     const presentation = this.isNewPresentation ? null : this.$store.getters.presentation(this.id)
     if (presentation) {
       // 編集の場合、対象の発表データをセットする
@@ -182,6 +180,15 @@ export default {
     }
   },
   computed: {
+    isNewPresentation () {
+      return this.id === NEW_PRESENTATION_KEYWORD
+    },
+    isLoading () {
+      return !this.event && !this.user
+    },
+    canEdit () {
+      return this.isNewPresentation || (this.presentation && this.user.id === this.presentation.presenter.id)
+    },
     /*
      * イベントの取得
      */

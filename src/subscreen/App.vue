@@ -8,7 +8,6 @@ import 'firebase/firestore'
 import 'firebase/auth'
 
 export default {
-  name: 'sub-app',
   beforeCreate () {
     const firestore = firebase.firestore()
     firestore.settings({})

@@ -1,27 +1,27 @@
 <template>
   <v-app>
-    <v-toolbar app>
+    <v-app-bar app>
       <v-toolbar-title>Select Screen</v-toolbar-title>
-    </v-toolbar>
-    <v-progress-linear v-if="isLoadong" indeterminate></v-progress-linear>
-    <v-content v-else>
+    </v-app-bar>
+    <v-progress-linear v-if="isLoading" indeterminate />
+    <v-main v-else>
       <v-container fluid>
-        <v-layout row>
-          <v-flex v-if="screens.length === 0" class="display-1">会場がありません。</v-flex>
+        <v-layout>
+          <v-flex v-if="screens.length === 0" class="text-h4">会場がありません。</v-flex>
           <v-flex v-else>
             <v-list>
-              <v-list-tile v-for="screen in screens" :key="screen.id" :to="{ path: screen.id }">
-                <v-list-tile-content>
-                  <v-list-tile-title class="title">
+              <v-list-item v-for="screen in screens" :key="screen.id" :to="{ path: screen.id }">
+                <v-list-item-content>
+                  <v-list-item-title class="text-h6">
                     {{ screen.name || '（名称未設定の会場）' }}
-                  </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </v-list>
           </v-flex>
         </v-layout>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
@@ -30,10 +30,9 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 
 export default {
-  name: 'select-subscreen',
   data () {
     return {
-      isLoadong: true,
+      isLoading: true,
       screens: []
     }
   },
@@ -52,7 +51,7 @@ export default {
           })
         })
         this.screens = screens
-        this.isLoadong = false
+        this.isLoading = false
       }).catch((error) => {
         console.log('Error getting collection:', error)
       })

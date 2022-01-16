@@ -1,55 +1,46 @@
 <template>
-  <v-layout row class="pb-5">
+  <v-layout class="pb-5">
     <v-flex>
 
       <v-card class="mb-2 pb-2">
-
-        <v-card-title>
+        <v-card-title primary-title>
           <div>
-            <div v-if="screen" class="grey--text">
-              <template v-if="screen.name">
-                {{ screen.name }}
-              </template>
-              <template v-else>
-                （スクリーン名未設定）
-              </template>
-            </div>
-            <h3 class="headline mb-0">スクリーンの管理</h3>
+            <div class="grey--text text-subtitle-2 mb-3">{{ screen.name || "（スクリーン名未設定）" }}</div>
+            <div class="text-h5">スクリーンの管理</div>
           </div>
         </v-card-title>
 
         <v-container grid-list-md class="py-0">
-          <v-layout row wrap>
+          <v-layout wrap>
             <v-flex xs12 sm8>
               <v-select
-              :items="events"
-              name="event"
-              item-text="title"
-              item-value="id"
-              box
-              label="イベントを選択してください"
-              @change="setEventsPresentations"
-              >
-            </v-select>
+                :items="events"
+                name="event"
+                item-text="title"
+                item-value="id"
+                outlined
+                dense
+                label="イベントを選択してください"
+                @change="setEventsPresentations"
+              />
             </v-flex>
           </v-layout>
 
-          <v-layout row wrap>
+          <v-layout wrap>
             <v-flex xs12 sm9 xl11>
-
-              <v-card-title class="px-0 py-0" >
+              <v-row class="pl-3">
                 <div>
                   <strong>表示中の発表：</strong>
                 </div>
-                <template v-if="screen && screen.displayPresentationRef">
+                <template v-if="screen.displayPresentationRef">
                   <div class="text-truncate">
-                    {{ getEventTitle(screen.displayPresentationRef.eventId) }}
+                    {{ getEventTitle(displayPresentationRef.eventId) }}
                   </div>
                   <div v-if="screen.displayPresentationRef" class="text-truncate">
-                    &nbsp;>&nbsp;{{ screen.displayPresentationRef.title }}
+                    &nbsp;>&nbsp;{{ displayPresentationRef.title }}
                   </div>
-                  <div v-if="screen.displayPresentationRef.presenter" class="text-truncate">
-                    &nbsp;（{{ screen.displayPresentationRef.presenter.name }}）
+                  <div v-if="displayPresentationRef.presenter" class="text-truncate">
+                    &nbsp;（{{ displayPresentationRef.presenter.name }}）
                   </div>
                 </template>
                 <template v-else>
@@ -57,10 +48,10 @@
                     なし
                   </div>
                 </template>
-              </v-card-title>
+              </v-row>
             </v-flex>
           </v-layout>
-          <v-layout row wrap>
+          <v-layout wrap>
             <v-flex xs12>
               <v-card-actions class="px-0">
                 <v-btn small color="grey lighten-1" @click="initializeScreen()">
@@ -72,17 +63,17 @@
         </v-container>
       </v-card>
 
-      <v-card v-if="this.selectedEvent">
+      <v-card v-if="selectedEvent">
         <v-list two-line>
 
           <template v-for="(presentation, index) in selectedEvent.presentations">
-            <v-list-tile
+            <v-list-item
               v-if="presentation.id"
               @click="selectPresentation(presentation)"
               :key="presentation.id + '_list'"
               class="my-2">
-              <v-list-tile-avatar :key="presentation.id + '_avatar'">
-                <v-icon v-if="screen.displayPresentationRef && presentation.id == screen.displayPresentationRef.id"
+              <v-list-item-avatar :key="presentation.id + '_avatar'">
+                <v-icon v-if="displayPresentationRef && presentation.id === displayPresentationRef.id"
                   x-large
                   color="orange lighten-1">
                   cast_connected
@@ -92,16 +83,16 @@
                   color="grey lighten-1">
                   cast
                 </v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title :key="presentation.id + '_title'">
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title :key="presentation.id + '_title'">
                   {{ presentation.title }}
-                </v-list-tile-title>
-                <v-list-tile-sub-title v-if="presentation.presenter" :key="presentation.id + '_subtitle'">
+                </v-list-item-title>
+                <v-list-item-subtitle v-if="presentation.presenter" :key="presentation.id + '_subtitle'">
                   by {{ presentation.presenter.name }}
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
             <v-divider
               v-if="index+1 < selectedEvent.presentations.length"
               :key="presentation.id + '_divider'"
@@ -110,7 +101,7 @@
             </v-divider>
           </template>
 
-          <template v-if="selectedEvent.presentations == 0">
+          <template v-if="selectedEvent.presentations.length === 0">
             <v-card-text>
               まだ発表はありません。
             </v-card-text>
@@ -133,9 +124,9 @@
     </v-flex>
   </v-layout>
 </template>
+
 <script>
 export default {
-  name: 'adminScreenSetting',
   props: {
     id: {
       type: String,
@@ -159,6 +150,12 @@ export default {
      */
     events () {
       return this.$store.getters.events
+    },
+    displayPresentationRef () {
+      if (!this.screen) {
+        return {}
+      }
+      return this.screen.displayPresentationRef || {}
     }
   },
   methods: {
