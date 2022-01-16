@@ -10,5 +10,16 @@
       "**/.*",
       "**/node_modules/**"
     ]
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 3000
+    },
+    "ui": {
+      "enabled": true
+    }
   }
 }
