@@ -1,14 +1,14 @@
 <template>
   <v-app>
-    <v-toolbar height="80" extended>
-      <v-toolbar-title class="text-h2">{{ presentationTitle }}</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <qriously id="qrcode" class="pt-1 pb-0" :value="qrUrl" size="140"/>
-      <template v-slot:extension>
-        <div class="text-h3 text-truncate">{{ presenterName }}</div>
+    <v-toolbar :max-height="150" extended>
+      <v-toolbar-title class="text-h3">{{ presentationTitle }}</v-toolbar-title>
+      <v-spacer />
+      <qriously id="qrcode" :value="qrUrl" :size="140"/>
+      <template #extension>
+        <div class="text-h5 text-truncate">{{ presenterName }}</div>
       </template>
     </v-toolbar>
-    <v-progress-linear v-if="isLoadong" :indeterminate="isLoadong"></v-progress-linear>
+    <v-progress-linear v-if="isLoading" indeterminate />
     <v-main v-else>
       <v-container fluid>
         <v-layout
@@ -17,10 +17,10 @@
           justify-center
         >
           <v-flex v-if="presentation === null" class="text-h4">ただいま発表は行われていません。</v-flex>
-          <v-flex v-else-if="stamps.length === 0" class="text-h4">準備中...</v-flex>
+          <v-flex v-else-if="displayStamps.length === 0" class="text-h4">準備中...</v-flex>
           <template v-else>
             <v-flex
-              v-for="stamp in stamps"
+              v-for="stamp in displayStamps"
               :key="stamp.id"
               xs4
               d-flex
@@ -30,6 +30,7 @@
                   :src="stamp.src || ''"
                   :alt="stamp.string"
                   :class="['lighten-2', 'display-4', 'text-xs-center', {'blinking': stamp.blink}]"
+                  style="max-height: 300px; max-width: 300px"
                 >
               </v-card>
             </v-flex>
@@ -37,7 +38,7 @@
         </v-layout>
       </v-container>
       <v-footer class="pa-3" app>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <div class="text-h6">{{ screenName }}</div>
       </v-footer>
     </v-main>
@@ -49,7 +50,6 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 
 export default {
-  name: 'subscreen',
   props: {
     id: {
       type: String,
@@ -58,7 +58,7 @@ export default {
   },
   data () {
     return {
-      isLoadong: true,
+      isLoading: true,
       screenInfo: null,
       presentation: null,
       stamps: [],
@@ -91,6 +91,10 @@ export default {
       return (this.screenInfo !== null && this.screenInfo.displayPresentationRef !== null)
         ? `${window.location.origin}/#/presentations/${this.screenInfo.displayPresentationRef.id}`
         : window.location.origin
+    },
+    displayStamps () {
+      const ids = this.stampCounts.map((sc) => sc.stampId)
+      return this.stamps.filter((s) => ids.includes(s.id))
     }
   },
   watch: {
@@ -147,12 +151,12 @@ export default {
           }
           // 表示する発表が取得できない場合は後続のリスナの設定不要
           if (!screenDoc.exists) {
-            this.isLoadong = false
+            this.isLoading = false
             return
           }
           this.screenInfo = screenDoc.data()
           if (this.screenInfo.displayPresentationRef == null) {
-            this.isLoadong = false
+            this.isLoading = false
             return
           }
           // presentationのリスナを設定
@@ -169,7 +173,7 @@ export default {
                 } else {
                   console.log('No such document!')
                 }
-                this.isLoadong = false
+                this.isLoading = false
               })
           // shardsのリスナを設定
           const stampCounts = firestore.collection('stampCounts')

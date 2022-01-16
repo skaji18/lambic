@@ -46,9 +46,9 @@
     </v-flex>
   </v-layout>
 </template>
+
 <script>
 export default {
-  name: 'adminScreenList',
   computed: {
     screens () {
       return this.$store.getters.screens

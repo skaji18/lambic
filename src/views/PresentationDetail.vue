@@ -1,54 +1,48 @@
 <template>
   <v-layout class="pb-5">
-    <v-flex v-if="presentation != null">
-
+    <v-flex v-if="presentation">
       <v-card>
         <v-card-text>
           <v-layout align-center mb-2 class="grey--text">
             <span class="text-truncate">{{ event.title }}</span>
-            <v-spacer></v-spacer>
+            <v-spacer />
             <span>{{ event.date | toDateString }}</span>
           </v-layout>
           <v-layout align-center>
-          <h1 class="text-h5">{{ presentation.title }}</h1>
-          <v-spacer></v-spacer>
+            <h1 class="text-h5">{{ presentation.title }}</h1>
+          <v-spacer />
 
-          <v-menu
-            v-if="user != null &&
-              presentation.presenter &&
-              presentation.presenter.id == user.id"
-            bottom
-            left
-          >
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" class="mx-0 my-0">
-                <v-icon color="gray">more_vert</v-icon>
-              </v-btn>
-            </template>
-            <v-list class="px-2">
-              <v-list-item @click="editPresentation">
-                <v-list-item-title>
-                  <v-icon class="mr-1">edit</v-icon>編集する
-                </v-list-item-title>
-              </v-list-item>
-              <v-divider class="mx-2"></v-divider>
-              <v-list-item @click="deletePresentation">
-                <v-list-item-title>
-                  <v-icon class="mr-1">delete_forever</v-icon>削除する
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
+            <v-menu
+              v-if="user && presentation.presenter.id === user.id"
+              bottom
+              left
+            >
+              <template #activator="{ on }">
+                <v-btn icon v-on="on" class="mx-0 my-0">
+                  <v-icon color="gray">more_vert</v-icon>
+                </v-btn>
+              </template>
+              <v-list class="px-2">
+                <v-list-item @click="editPresentation">
+                  <v-list-item-title>
+                    <v-icon class="mr-1">edit</v-icon>編集する
+                  </v-list-item-title>
+                </v-list-item>
+                <v-divider class="mx-2" />
+                <v-list-item @click="deletePresentation">
+                  <v-list-item-title>
+                    <v-icon class="mr-1">delete_forever</v-icon>削除する
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-layout>
 
-          <div  v-if="presentation.presenter" class="grey--text mb-3">
-            by {{ presentation.presenter.name }}
+          <div class="grey--text mb-3">
+            <template v-if="presentation.presenter">by {{ presentation.presenter.name }}</template>
+            <template v-else>（発表者情報は削除されています）</template>
           </div>
-          <div  v-else class="grey--text mb-3">
-            （発表者情報は削除されています）
-          </div>
-          <p class="markdown__preview" v-html="convertMd2Html(presentation.description)">"</p>
+          <p class="markdown__preview" v-html="convertMd2Html(presentation.description)" />
         </v-card-text>
       </v-card>
 
@@ -59,8 +53,8 @@
             :key="index"
             @click="countUpStamp(stamp.id)"
             color="light-green"
-            text-color="white"
-            class="text-center"
+            outlined
+            class="text-center mx-1"
             label
           >
             <v-avatar v-if="stamp.src" tile color="grey lighten-3">
@@ -69,6 +63,7 @@
             <v-avatar v-else color="grey lighten-3" class="black--text">
               {{ stamp.string }}
             </v-avatar>
+            <v-spacer />
             <span>
               {{ getStampCount(stamp.id) }}
             </span>
@@ -85,7 +80,7 @@
           :class="{ 'yellow': comment.isDirect, 'lighten-4': comment.isDirect }"
           :key="comment.id + '-div'"
         >
-          <v-divider></v-divider>
+          <v-divider />
           <v-card-text class="py-2">
             <v-layout v-if="comment.isDirect">
               <small class="grey--text">ダイレクトコメント</small>
@@ -104,7 +99,7 @@
               <strong  class="text-truncate">
                 {{ comment.userRef.name || '（削除されたユーザ）' }}
               </strong>
-              <v-spacer></v-spacer>
+              <v-spacer />
               <span>{{ comment.postedAt | toDateTimeString }}</span>
               <v-menu bottom left v-if="comment.isEditable || comment.isDeletable">
                 <template v-slot:activator="{ on }">
@@ -122,7 +117,7 @@
                 </v-list>
               </v-menu>
             </v-layout>
-            <p class="markdown__preview" v-html="convertMd2Html(comment.comment)"></p>
+            <p class="markdown__preview" v-html="convertMd2Html(comment.comment)" />
           </v-card-text>
         </div>
         <v-card-text v-if="comments.length === 0">
@@ -151,18 +146,21 @@
         width="500"
         v-if="presentation.isAllowComment !== false"
       >
-        <v-btn
-          slot="activator"
-          fixed
-          fab
-          bottom
-          right
-          color="green"
-        >
-          <v-icon>create</v-icon>
-        </v-btn>
+        <template #activator="{ on }">
+          <v-btn
+            fixed
+            fab
+            bottom
+            right
+            color="green"
+            v-on="on"
+          >
+            <v-icon>create</v-icon>
+          </v-btn>
+        </template>
 
         <v-card v-if="user" class="markdown__container">
+          <v-card-title><!-- spacing --></v-card-title>
           <v-card-text class="pb-1">
             <v-alert
               outlined
@@ -176,9 +174,7 @@
             <v-tabs
               v-if="dialog"
               v-model="tab"
-              color="grey lighten-5"
               grow
-              class="markdown__tabs"
             >
               <v-tab>Write</v-tab>
               <v-tab>Preview</v-tab>
@@ -187,25 +183,26 @@
               v-if="dialog"
               v-model="tab"
             >
-              <v-tab-item>
+              <v-tab-item class="pa-2">
                 <v-textarea
                   v-if="dialog"
                   outlined
+                  dense
                   autofocus
                   no-resize
                   name="comment-input"
                   label="input comment"
                   v-model="comment"
-                ></v-textarea>
+                />
               </v-tab-item>
               <v-tab-item>
                 <v-card
                   flat
                   tile
-                  height="159"
+                  height="196"
                   class="scroll"
                 >
-                  <v-card-text class="markdown__preview"  v-html="convertMd2Html(comment)"></v-card-text>
+                  <v-card-text class="markdown__preview"  v-html="convertMd2Html(comment)" />
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
@@ -228,19 +225,19 @@
                 </v-flex>
                 <v-flex>
                   <v-tooltip right>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-icon color="primary" v-on="on">help</v-icon>
                     </template>
-                    <span><strong>ダイレクトコメント</strong>：<br>発表者と投稿者のみが<br>閲覧できるコメント</span>
+                    <span>発表者と投稿者のみが閲覧できるコメント</span>
                   </v-tooltip>
                 </v-flex>
               </v-layout>
             </v-container>
 
           </v-card-text>
-          <v-divider></v-divider>
+          <v-divider />
           <v-card-actions>
-            <v-spacer></v-spacer>
+            <v-spacer />
             <v-btn
               color="primary"
               @click="postCommnet"
@@ -275,7 +272,7 @@
       </v-dialog>
 
     </v-flex>
-    <v-progress-linear v-else :indeterminate="presentation == null"></v-progress-linear>
+    <v-progress-linear v-else indeterminate />
   </v-layout>
 </template>
 
@@ -284,7 +281,6 @@ import moment from 'moment'
 import markdownIt from '@/markdownIt'
 
 export default {
-  name: 'presentation',
   props: {
     id: {
       type: String,
@@ -502,10 +498,6 @@ export default {
 .markdown__preview >>> img {
   max-width: 100%;
   max-height: 100%;
-}
-
-.markdown__container >>> .markdown__tabs {
-  margin-bottom: 2px;
 }
 
 .top-56 {

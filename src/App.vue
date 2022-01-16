@@ -92,7 +92,6 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 
 export default {
-  name: 'app',
   data () {
     return {
       permanent: false

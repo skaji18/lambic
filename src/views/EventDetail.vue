@@ -1,34 +1,28 @@
 <template>
-
   <v-layout v-if="event" wrap class="pb-5">
     <v-flex>
       <v-card class="mb-2" color="light-green lighten-4">
         <v-card-title primary-title>
           <div>
-            <div class="grey--text mb-3">{{ event.date | toDateString }}</div>
+            <div class="grey--text text-subtitle-2 mb-3">{{ event.date | toDateString }}</div>
             <div class="text-h5">{{ event.title }}</div>
           </div>
         </v-card-title>
-        <v-card-text>
-          {{ event.description }}
-        </v-card-text>
+        <v-card-text>{{ event.description }}</v-card-text>
       </v-card>
 
-      <v-card v-if="event.presentations != 0">
-
+      <v-card v-if="event.presentations !== 0">
         <v-list two-line>
           <template v-for="(presentation, index) in event.presentations">
-
             <v-list-item :key="presentation.id" :to="{ path: '/presentations/' + presentation.id }">
-
               <v-list-item-content>
                 <v-list-item-title class="text-h6">
                   {{ presentation.title }}
                 </v-list-item-title>
-                <v-list-item-subtitle v-if="presentation.presenter">
-                  by {{ presentation.presenter.name }}
-                </v-list-item-subtitle>
                 <v-list-item-subtitle>
+                  <div v-if="presentation.presenter">
+                    by {{ presentation.presenter.name }}
+                  </div>
                   {{ presentation.description }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -38,13 +32,12 @@
               :key="presentation.id + '_divider'"
               class="mx-2 my-2">
             </v-divider>
-
           </template>
         </v-list>
 
       </v-card>
 
-      <v-card v-else :indeterminate="event.presentations == 0">
+      <v-card v-else indeterminate>
         <v-card-text>
           まだ発表はありません。
         </v-card-text>
@@ -95,13 +88,13 @@
       </v-btn>
     </v-flex>
   </v-layout>
-  <v-progress-linear v-else :indeterminate="event == null"></v-progress-linear>
+  <v-progress-linear v-else indeterminate />
 </template>
 
 <script>
 import moment from 'moment'
+
 export default {
-  name: 'eventDetail',
   props: {
     id: {
       type: String,

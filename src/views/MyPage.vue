@@ -27,8 +27,10 @@
               <v-text-field
                 v-model="name"
                 placeholder="ユーザ名を入力してください"
+                outlined
+                dense
                 single-line
-              ></v-text-field>
+              />
             </v-flex>
           </v-layout>
           <v-layout>
@@ -43,22 +45,16 @@
     </v-flex>
     <v-snackbar
       v-model="snackbar"
-      :bottom="'top' === 'bottom'"
-      :timeout=5000
-      :top="'top'"
-      color=green
+      :top="true"
+      color="green"
     >
       更新しました。
-      <v-btn text @click="snackbar = false">
-        <v-icon color="white">close</v-icon>
-      </v-btn>
     </v-snackbar>
   </v-layout>
 </template>
 
 <script>
 export default {
-  name: 'myPage',
   data () {
     return {
       name: '',

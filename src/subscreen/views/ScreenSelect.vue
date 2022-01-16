@@ -3,7 +3,7 @@
     <v-app-bar app>
       <v-toolbar-title>Select Screen</v-toolbar-title>
     </v-app-bar>
-    <v-progress-linear v-if="isLoadong" indeterminate></v-progress-linear>
+    <v-progress-linear v-if="isLoading" indeterminate />
     <v-main v-else>
       <v-container fluid>
         <v-layout>
@@ -30,10 +30,9 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 
 export default {
-  name: 'select-subscreen',
   data () {
     return {
-      isLoadong: true,
+      isLoading: true,
       screens: []
     }
   },
@@ -52,7 +51,7 @@ export default {
           })
         })
         this.screens = screens
-        this.isLoadong = false
+        this.isLoading = false
       }).catch((error) => {
         console.log('Error getting collection:', error)
       })

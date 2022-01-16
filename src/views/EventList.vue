@@ -1,6 +1,6 @@
 <template>
-  <v-layout class="pb-5">
-    <v-flex v-if="events.length != 0">
+  <v-layout>
+    <v-flex v-if="events.length !== 0">
       <v-card>
 
         <v-card color="light-green">
@@ -35,13 +35,14 @@
 
       </v-card>
     </v-flex>
-    <v-progress-linear v-else :indeterminate="events.length == 0"></v-progress-linear>
+    <v-progress-linear v-else indeterminate />
   </v-layout>
 </template>
+
 <script>
 import moment from 'moment'
+
 export default {
-  name: 'events',
   computed: {
     /*
      * イベント一覧取得
