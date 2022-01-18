@@ -1,14 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { vuexfireMutations, firestoreAction } from 'vuexfire'
-import firebase from 'firebase/app'
-import FirebaseConfig from '../firebase-config.json'
-import 'firebase/firestore'
 import moment from 'moment'
-
-const firebaseApp = firebase.initializeApp(FirebaseConfig)
-const firestore = firebaseApp.firestore()
-firestore.settings({})
+import { firestore, firestoreUtil } from '@/firebase'
 
 const users = firestore.collection('users')
 const permissions = firestore.collection('permissions')
@@ -309,7 +303,7 @@ export default new Vuex.Store({
     appendComment ({ state }, { comment, presentationId, isDirect }) {
       comments.add({
         comment,
-        postedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+        postedAt: firestoreUtil.fromDate(),
         presentationId,
         isDirect,
         userRef: users.doc(state.user.id)
@@ -393,7 +387,7 @@ export default new Vuex.Store({
             // shardNum個あるshardsのうち、ランダムな1個のカウントをインクリメント
             const shardIdx = Math.floor(Math.random() * scSnap.data().shardNum).toString()
             stampCountDoc.collection('shards').doc(shardIdx).update({
-              count: firebase.firestore.FieldValue.increment(1)
+              count: firestoreUtil.increment(1)
             })
           })
       }

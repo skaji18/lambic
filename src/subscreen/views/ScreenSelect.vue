@@ -26,8 +26,7 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/firestore'
+import { firestore } from '@/firebase'
 
 export default {
   name: 'select-subscreen',
@@ -38,7 +37,6 @@ export default {
     }
   },
   created () {
-    const firestore = firebase.firestore()
     const screensRef = firestore.collection('screens')
     screensRef
       .get()

@@ -100,8 +100,7 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import { auth } from '@/firebase'
 
 export default {
   name: 'app',
@@ -122,14 +121,12 @@ export default {
     }
   },
   beforeCreate () {
-    firebase
-      .auth()
-      .onAuthStateChanged((user) => {
-        if (user) {
-          // ユーザ情報をセット
-          this.$store.dispatch('login', user)
-        }
-      })
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // ユーザ情報をセット
+        this.$store.dispatch('login', user)
+      }
+    })
     this.$store.dispatch('initStore')
   },
   methods: {
@@ -140,7 +137,7 @@ export default {
     // ログアウト処理
     doLogout () {
       if (confirm('ログアウトしますか？')) {
-        firebase.auth().signOut().catch(function (error) {
+        auth.signOut().catch(function (error) {
           console.log(error)
         })
         this.$store.dispatch('logout')

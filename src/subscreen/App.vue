@@ -3,16 +3,9 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import 'firebase/auth'
+import '@/firebase'
 
 export default {
-  name: 'sub-app',
-  beforeCreate () {
-    const firestore = firebase.firestore()
-    firestore.settings({})
-  }
 }
 </script>
 
