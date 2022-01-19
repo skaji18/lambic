@@ -2,15 +2,15 @@
   <v-layout v-if="event &&
     user &&
     (isNewPresentation || (presentation && user.id == presentation.presenter.id))"
-    row class="pb-5">
+    row class="pb-5 e2e-draft-presentation">
     <v-flex>
 
       <v-card class="mb-2">
         <v-card-text class="pb-0">
           <v-layout class="grey--text">
-            <span class="text-truncate">{{ event.title }}</span>
+            <span class="text-truncate e2e-event-title">{{ event.title }}</span>
             <v-spacer></v-spacer>
-            <span>{{ event.date | toDateString }}</span>
+            <span class="e2e-event-date">{{ event.date | toDateString }}</span>
           </v-layout>
         </v-card-text>
         <v-card-title>

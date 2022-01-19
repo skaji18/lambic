@@ -1,16 +1,16 @@
 <template>
   <v-layout row class="pb-5">
-    <v-flex v-if="presentation != null">
+    <v-flex v-if="presentation != null" class="e2e-presentation-detail">
 
       <v-card>
         <v-card-text>
           <v-layout align-center mb-2 class="grey--text">
-            <span class="text-truncate">{{ event.title }}</span>
+            <span class="text-truncate e2e-event-title">{{ event.title }}</span>
             <v-spacer></v-spacer>
-            <span>{{ event.date | toDateString }}</span>
+            <span class="e2e-event-date">{{ event.date | toDateString }}</span>
           </v-layout>
           <v-layout align-center>
-          <h1 class="headline">{{ presentation.title }}</h1>
+          <h1 class="headline e2e-presentation-title">{{ presentation.title }}</h1>
           <v-spacer></v-spacer>
 
           <v-menu
@@ -21,7 +21,7 @@
             left
           >
             <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" class="mx-0 my-0">
+              <v-btn icon v-on="on" class="mx-0 my-0 e2e-presenter-menu">
                 <v-icon color="gray">more_vert</v-icon>
               </v-btn>
             </template>
@@ -42,13 +42,13 @@
 
           </v-layout>
 
-          <div  v-if="presentation.presenter" class="grey--text mb-3">
+          <div  v-if="presentation.presenter" class="grey--text mb-3 e2e-presenter-name">
             by {{ presentation.presenter.name }}
           </div>
           <div  v-else class="grey--text mb-3">
             （発表者情報は削除されています）
           </div>
-          <p class="markdown__preview" v-html="convertMd2Html(presentation.description)">"</p>
+          <p class="markdown__preview e2e-presentation-description" v-html="convertMd2Html(presentation.description)">"</p>
         </v-card-text>
       </v-card>
 
@@ -60,7 +60,7 @@
             @click="countUpStamp(stamp.id)"
             color="light-green"
             text-color="white"
-            class="text-xs-center"
+            class="text-xs-center e2e-stamp"
             label
           >
             <v-avatar v-if="stamp.src" tile color="grey lighten-3">
@@ -69,7 +69,7 @@
             <v-avatar v-else color="grey lighten-3" class="black--text">
               {{ stamp.string }}
             </v-avatar>
-            <span>
+            <span class="e2e-stamp-count">
               {{ getStampCount(stamp.id) }}
             </span>
           </v-chip>
@@ -101,14 +101,14 @@
               <v-avatar v-else size="28" class="mr-1">
                 <v-icon size="28" color="gray">account_circle</v-icon>
               </v-avatar>
-              <strong  class="text-truncate">
+              <strong  class="text-truncate e2e-commenter-name">
                 {{ comment.userRef.name || '（削除されたユーザ）' }}
               </strong>
               <v-spacer></v-spacer>
-              <span>{{ comment.postedAt | toDateTimeString }}</span>
+              <span class="e2e-comment-date">{{ comment.postedAt | toDateTimeString }}</span>
               <v-menu bottom left v-if="comment.isEditable || comment.isDeletable">
                 <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on">
+                  <v-btn icon v-on="on" class="e2e-comment-menu">
                     <v-icon>more_vert</v-icon>
                   </v-btn>
                 </template>
@@ -122,7 +122,7 @@
                 </v-list>
               </v-menu>
             </v-layout>
-            <p class="markdown__preview" v-html="convertMd2Html(comment.comment)"></p>
+            <p class="markdown__preview e2e-comment" v-html="convertMd2Html(comment.comment)"></p>
           </v-card-text>
         </div>
         <v-card-text v-if="comments.length === 0">
@@ -158,6 +158,7 @@
           bottom
           right
           color="green"
+          class="e2e-add-comment"
         >
           <v-icon>create</v-icon>
         </v-btn>
@@ -258,7 +259,7 @@
         </v-card>
         <v-card v-else>
           <v-card-text class="text-xs-center">
-            <p class="title mt-3">コメントしてみませんか？</p>
+            <p class="title mt-3 e2e-not-register-message">コメントしてみませんか？</p>
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn
