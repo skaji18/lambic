@@ -2,15 +2,15 @@
   <v-layout v-if="event &&
     user &&
     (isNewPresentation || (presentation && user.id == presentation.presenter.id))"
-    row class="pb-5">
+    row class="pb-5 e2e-draft-presentation">
     <v-flex>
 
       <v-card class="mb-2">
         <v-card-text class="pb-0">
           <v-layout class="grey--text">
-            <span class="text-truncate">{{ event.title }}</span>
+            <span class="text-truncate e2e-event-title">{{ event.title }}</span>
             <v-spacer></v-spacer>
-            <span>{{ event.date | toDateString }}</span>
+            <span class="e2e-event-date">{{ event.date | toDateString }}</span>
           </v-layout>
         </v-card-text>
         <v-card-title>
@@ -31,6 +31,7 @@
                   label="タイトル"
                   outline
                   :rules="titleRules"
+                  class="e2e-presentation-title-input"
                   required
                 ></v-text-field>
               </v-flex>
@@ -55,6 +56,7 @@
                       outline
                       :counter="descriptionMaxLength"
                       :rules="descriptionRules"
+                      class="e2e-presentation-description-input"
                     >
                     </v-textarea>
                   </v-tab-item>
@@ -92,6 +94,7 @@
                   v-model="checkConfidential"
                   color="green"
                   required
+                  class="e2e-confidential-checkbox"
                 >
                   <template v-slot:label>
                     <span class="black--text">
@@ -112,7 +115,7 @@
         color="orange"
         block
         large
-        class="my-2 white--text"
+        class="my-2 white--text e2e-submit"
       >
         登録内容を確定する
       </v-btn>

@@ -1,5 +1,5 @@
 <template>
-  <v-layout row class="pb-5">
+  <v-layout row class="pb-5 e2e-screen-list">
     <v-flex>
       <v-card>
         <v-card-title>
@@ -15,7 +15,9 @@
           <template v-for="(screen, index) in screens">
             <v-list-tile
               :to="{ path: 'screens/' + screen.id }"
-              :key="screen.id + '_list'">
+              :key="screen.id + '_list'"
+              class="e2e-screen-name"
+            >
               <v-list-tile-title class="title ml-2" :key="screen.id + '_title'">
                 <template v-if="screen.name">
                   {{ screen.name }}

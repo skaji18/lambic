@@ -4,14 +4,16 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve:emulate": "vue-cli-service serve --mode emulate",
+    "emulators:start": "firebase emulators:start --only firestore,auth --import=./emulator-data",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:integration": "mocha tests/integration/bootstrap.js --recursive tests/integration --timeout 0",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "./run_e2e.sh"
   },
   "dependencies": {
-    "firebase": "^6.6.1",
-    "firebaseui-ja": "^1.0.0",
+    "firebase": "^8.10.0",
+    "firebaseui": "^5.0.0",
     "markdown-it": "^10.0.0",
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-imsize": "^2.0.1",
@@ -28,7 +30,9 @@
     "vuexfire": "^3.1.2"
   },
   "devDependencies": {
+    "@cypress/webpack-preprocessor": "^5.11.1",
     "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-plugin-e2e-cypress": "^4.5.15",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-plugin-pwa": "^3.11.0",
     "@vue/cli-plugin-unit-mocha": "^3.11.0",
@@ -39,9 +43,8 @@
     "chai": "^4.2.0",
     "eslint": "^6.4.0",
     "eslint-plugin-vue": "^5.2.3",
-    "firebase-tools": "^7.3.2",
+    "firebase-tools": "^9.23.3",
     "mocha": "^6.2.2",
-    "puppeteer": "^1.20.0",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {

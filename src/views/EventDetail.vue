@@ -1,15 +1,15 @@
 <template>
 
-  <v-layout v-if="event" row wrap class="pb-5">
+  <v-layout v-if="event" row wrap class="pb-5 e2e-event-detail">
     <v-flex>
       <v-card class="mb-2" color="light-green lighten-4">
         <v-card-title primary-title>
           <div>
-            <div class="grey--text mb-3">{{ event.date | toDateString }}</div>
-            <div class="headline">{{ event.title }}</div>
+            <div class="grey--text mb-3 e2e-event-date">{{ event.date | toDateString }}</div>
+            <div class="headline e2e-event-title">{{ event.title }}</div>
           </div>
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="e2e-event-description">
           {{ event.description }}
         </v-card-text>
       </v-card>
@@ -22,13 +22,13 @@
             <v-list-tile :key="presentation.id" :to="{ path: '/presentations/' + presentation.id }">
 
               <v-list-tile-content>
-                <v-list-tile-title class="title">
+                <v-list-tile-title class="title e2e-presentation-title">
                   {{ presentation.title }}
                 </v-list-tile-title>
-                <v-list-tile-sub-title v-if="presentation.presenter">
+                <v-list-tile-sub-title v-if="presentation.presenter" class="e2e-presenter-name">
                   by {{ presentation.presenter.name }}
                 </v-list-tile-sub-title>
-                <v-list-tile-sub-title>
+                <v-list-tile-sub-title class="e2e-presentation-description">
                   {{ presentation.description }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
@@ -55,7 +55,7 @@
         color="green"
         block
         large
-        class="my-2 white--text"
+        class="my-2 white--text e2e-add-presentation"
       >
         <v-icon color="white">add</v-icon>
         発表を申し込む
@@ -67,7 +67,7 @@
       >
         <v-card>
           <v-card-text class="text-xs-center">
-            <p class="title mt-3">発表登録にはログインが必要です。</p>
+            <p class="title mt-3 e2e-not-register-message">発表登録にはログインが必要です。</p>
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn

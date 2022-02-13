@@ -23,7 +23,7 @@
             </v-list-tile-avatar>
           </button>
           <v-list-tile-content>
-            <v-list-tile-title @click="goMyPage" id="userName">
+            <v-list-tile-title @click="goMyPage" class="e2e-user-name">
               <button type="button">{{ user.name }}</button>
             </v-list-tile-title>
             <v-list-tile-sub-title>
@@ -37,9 +37,9 @@
             <v-icon x-large color="light-green">account_circle</v-icon>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title id="userName">ゲストユーザ</v-list-tile-title>
+            <v-list-tile-title class="e2e-user-name">ゲストユーザ</v-list-tile-title>
             <v-list-tile-sub-title>
-              <button type="button" @click="goLogin">ログイン</button>
+              <button type="button" @click="goLogin" class="e2e-login">ログイン</button>
             </v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -51,7 +51,7 @@
             <v-icon>view_list</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>イベント一覧</v-list-tile-title>
+            <v-list-tile-title class="e2e-side-menu-item">イベント一覧</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-divider></v-divider>
@@ -63,7 +63,7 @@
             <v-icon>feedback</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>フィードバック</v-list-tile-title>
+            <v-list-tile-title class="e2e-side-menu-item">フィードバック</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-divider></v-divider>
@@ -78,7 +78,7 @@
               <v-icon>cast</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>スクリーンの設定</v-list-tile-title>
+              <v-list-tile-title class="e2e-side-menu-item">スクリーンの設定</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
 
@@ -89,7 +89,7 @@
       <qriously id="qrcode" class="pb-4" :value="href.here" :size="150"/>
     </v-navigation-drawer>
     <v-toolbar app color="light-green">
-      <v-toolbar-side-icon @click="permanent = !permanent"></v-toolbar-side-icon>
+      <v-toolbar-side-icon class="e2e-side-icon" @click="permanent = !permanent"></v-toolbar-side-icon>
     </v-toolbar>
     <v-content>
       <v-container fluid>
@@ -100,8 +100,7 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import { auth } from '@/firebase'
 
 export default {
   name: 'app',
@@ -122,14 +121,12 @@ export default {
     }
   },
   beforeCreate () {
-    firebase
-      .auth()
-      .onAuthStateChanged((user) => {
-        if (user) {
-          // ユーザ情報をセット
-          this.$store.dispatch('login', user)
-        }
-      })
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // ユーザ情報をセット
+        this.$store.dispatch('login', user)
+      }
+    })
     this.$store.dispatch('initStore')
   },
   methods: {
@@ -140,7 +137,7 @@ export default {
     // ログアウト処理
     doLogout () {
       if (confirm('ログアウトしますか？')) {
-        firebase.auth().signOut().catch(function (error) {
+        auth.signOut().catch(function (error) {
           console.log(error)
         })
         this.$store.dispatch('logout')

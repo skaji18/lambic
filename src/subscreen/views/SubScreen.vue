@@ -46,8 +46,7 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/firestore'
+import { firestore } from '@/firebase'
 
 export default {
   name: 'subscreen',
@@ -131,7 +130,6 @@ export default {
   },
   created () {
     // 各ドキュメントの変更を監視するリスナを設定
-    const firestore = firebase.firestore()
     // screenのリスナを設定
     this.unsubscribe.screenInfo =
       firestore.collection('screens')
