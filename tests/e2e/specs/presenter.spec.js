@@ -25,7 +25,7 @@ describe('発表者による操作', () => {
 
     cy.get('.e2e-side-icon').eq(0).click()
     cy.get('.e2e-user-name').eq(0).click()
-    cy.get('.e2e-my-page').should('visible')
+    cy.get('.e2e-my-page').should('be.visible')
 
     setValue('.e2e-user-name-input').textBox('発表者_edited')
     cy.get('.e2e-submit').eq(0).click()
@@ -64,7 +64,7 @@ describe('発表者による操作', () => {
     assert('.e2e-presentation-title').text('発表タイトル')
     assert('.e2e-presenter-name').text('by 発表者_edited')
     assert('.e2e-presentation-description').text('発表の説明')
-    cy.get('.e2e-presenter-menu').should('visible')
+    cy.get('.e2e-presenter-menu').should('be.visible')
 
     // スタンプ
     assert('.e2e-stamp').count(3)
@@ -154,7 +154,7 @@ describe('発表者による操作', () => {
     cy.get('.e2e-post-comment').eq(0).click()
     cy.wait(1000)
 
-    cy.get('.e2e-commenter-menu').should('visible')
+    cy.get('.e2e-commenter-menu').should('be.visible')
     assert('.e2e-commenter-name').count(1)
     assert('.e2e-commenter-name').text('発表者_edited')
     assert('.e2e-comment-date').notNull()
@@ -173,7 +173,7 @@ describe('発表者による操作', () => {
     cy.get('.e2e-post-comment').eq(0).click()
     cy.wait(1000)
 
-    cy.get('.e2e-commenter-menu').should('visible')
+    cy.get('.e2e-commenter-menu').should('be.visible')
     assert('.e2e-commenter-name').count(1)
     assert('.e2e-commenter-name').text('発表者_edited')
     assert('.e2e-comment-date').notNull()
