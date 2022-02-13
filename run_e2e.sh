@@ -8,7 +8,7 @@ while read -r path
 do
   # FIXME: 以下のコマンドで webpack build すると、firebase の config が標準出力に出てしまうので抑制したい
   #        単に npm run serve:emulate したときは標準出力に出ないので、実行順により何かしらの設定値がおかしくなってそう
-  firebase emulators:exec --only firestore,auth --import=./emulator-data \
+  SCREEN_SHOT_PATH=$(basename ${path}) firebase emulators:exec --only firestore,auth --import=./emulator-data \
       "vue-cli-service --mode emulate test:e2e --headless --spec ${path}"
   if [ $? -ne 0 ]; then
     exit_code=1
