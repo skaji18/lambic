@@ -1,6 +1,6 @@
 <template>
   <v-layout row class="pb-5">
-    <v-flex v-if="events.length != 0">
+    <v-flex v-if="events.length != 0" class="e2e-event-list">
       <v-card>
 
         <v-card color="light-green">
@@ -16,14 +16,14 @@
                 <v-list-tile :key="event.title" :to="{ path: 'events/' + event.id }" class="my-2">
                   <v-list-tile-content>
                     <div>
-                      {{ event.date | toDateString }}
+                      <span class="e2e-event-date">{{ event.date | toDateString }}</span>
                       <v-chip v-if="event.isFinished" small light>終了しました</v-chip>
                       <v-chip v-else-if="event.isToday" small color="green" text-color="white">本日開催</v-chip>
                     </div>
-                    <v-list-tile-title class="title">
+                    <v-list-tile-title class="title e2e-event-title">
                       {{ event.title }}
                     </v-list-tile-title>
-                    <v-list-tile-sub-title>
+                    <v-list-tile-sub-title class="e2e-event-description">
                       {{ event.description }}
                     </v-list-tile-sub-title>
                   </v-list-tile-content>

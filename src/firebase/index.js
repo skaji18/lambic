@@ -11,6 +11,11 @@ export const auth = firebase.auth()
 
 const useEmulate = process.env.VUE_APP_EMULATE
 if (useEmulate) {
+  // Hack: cypress でテストするときの設定。useEmulator より前に設定が必要
+  //       https://zenn.dev/cauchye/articles/20210816_yutaro-elk
+  //       https://github.com/cypress-io/cypress/issues/2374#issuecomment-1012928429
+  firestore.settings({ experimentalForceLongPolling: true })
+
   firestore.useEmulator('localhost', 3000)
   auth.useEmulator('http://localhost:9099')
 }

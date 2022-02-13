@@ -3,7 +3,7 @@
     <v-flex>
       <v-card>
         <v-card-title primary-title>
-          <div class="headline">アカウント情報</div>
+          <div class="headline e2e-my-page">アカウント情報</div>
         </v-card-title>
         <v-alert
           outline
@@ -28,12 +28,13 @@
                 v-model="name"
                 placeholder="ユーザ名を入力してください"
                 single-line
+                class="e2e-user-name-input"
               ></v-text-field>
             </v-flex>
           </v-layout>
           <v-layout row>
             <v-flex xs12 md6>
-              <v-btn @click="updateUserInfo" color="green" class="white--text">
+              <v-btn @click="updateUserInfo" color="green" class="white--text e2e-submit">
                 更新する
               </v-btn>
             </v-flex>

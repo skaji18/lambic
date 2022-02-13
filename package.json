@@ -8,8 +8,8 @@
     "emulators:start": "firebase emulators:start --only firestore,auth --import=./emulator-data",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:integration": "mocha tests/integration/bootstrap.js --recursive tests/integration --timeout 0",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "./run_e2e.sh"
   },
   "dependencies": {
     "firebase": "^8.10.0",
@@ -30,7 +30,9 @@
     "vuexfire": "^3.1.2"
   },
   "devDependencies": {
+    "@cypress/webpack-preprocessor": "^5.11.1",
     "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-plugin-e2e-cypress": "^4.5.15",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-plugin-pwa": "^3.11.0",
     "@vue/cli-plugin-unit-mocha": "^3.11.0",
@@ -43,7 +45,6 @@
     "eslint-plugin-vue": "^5.2.3",
     "firebase-tools": "^9.23.3",
     "mocha": "^6.2.2",
-    "puppeteer": "^1.20.0",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {

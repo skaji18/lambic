@@ -6,7 +6,7 @@
 
         <v-card-title>
           <div>
-            <div v-if="screen" class="grey--text">
+            <div v-if="screen" class="grey--text e2e-screen-name">
               <template v-if="screen.name">
                 {{ screen.name }}
               </template>
@@ -22,13 +22,14 @@
           <v-layout row wrap>
             <v-flex xs12 sm8>
               <v-select
-              :items="events"
-              name="event"
-              item-text="title"
-              item-value="id"
-              box
-              label="イベントを選択してください"
-              @change="setEventsPresentations"
+                :items="events"
+                name="event"
+                item-text="title"
+                item-value="id"
+                box
+                label="イベントを選択してください"
+                @change="setEventsPresentations"
+                class="e2e-event-select"
               >
             </v-select>
             </v-flex>
@@ -41,29 +42,26 @@
                 <div>
                   <strong>表示中の発表：</strong>
                 </div>
-                <template v-if="screen && screen.displayPresentationRef">
-                  <div class="text-truncate">
-                    {{ getEventTitle(screen.displayPresentationRef.eventId) }}
-                  </div>
-                  <div v-if="screen.displayPresentationRef" class="text-truncate">
-                    &nbsp;>&nbsp;{{ screen.displayPresentationRef.title }}
-                  </div>
-                  <div v-if="screen.displayPresentationRef.presenter" class="text-truncate">
-                    &nbsp;（{{ screen.displayPresentationRef.presenter.name }}）
-                  </div>
-                </template>
-                <template v-else>
-                  <div>
+                <div class="e2e-display-presentation">
+                  <template v-if="screen && screen.displayPresentationRef">
+                    <span class="text-truncate"
+                    >{{ getEventTitle(screen.displayPresentationRef.eventId) }}</span>
+                    <span v-if="screen.displayPresentationRef" class="text-truncate"
+                    >&nbsp;>&nbsp;{{ screen.displayPresentationRef.title }}</span>
+                    <span v-if="screen.displayPresentationRef.presenter" class="text-truncate"
+                    >&nbsp;（{{ screen.displayPresentationRef.presenter.name }}）</span>
+                  </template>
+                  <template v-else>
                     なし
-                  </div>
-                </template>
+                  </template>
+                </div>
               </v-card-title>
             </v-flex>
           </v-layout>
           <v-layout row wrap>
             <v-flex xs12>
               <v-card-actions class="px-0">
-                <v-btn small color="grey lighten-1" @click="initializeScreen()">
+                <v-btn small color="grey lighten-1" @click="initializeScreen()" class="e2e-clear-presentation">
                   表示を停止する
                 </v-btn>
               </v-card-actions>
@@ -80,7 +78,7 @@
               v-if="presentation.id"
               @click="selectPresentation(presentation)"
               :key="presentation.id + '_list'"
-              class="my-2">
+              class="my-2 e2e-select-presentation">
               <v-list-tile-avatar :key="presentation.id + '_avatar'">
                 <v-icon v-if="screen.displayPresentationRef && presentation.id == screen.displayPresentationRef.id"
                   x-large
