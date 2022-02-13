@@ -38,7 +38,7 @@ describe('ゲストユーザによる操作', () => {
     assert('.e2e-event-description').text('イベントの説明')
     assert('.e2e-event-date').text('2022/01/16（日）')
     assert('.e2e-presentation-title').text('発表タイトル')
-    assert('.e2e-presenter-name').text('by presenter')
+    assert('.e2e-presenter-name').text('by 発表者')
     assert('.e2e-presentation-description').text('発表の説明')
   })
 
@@ -57,7 +57,7 @@ describe('ゲストユーザによる操作', () => {
     assert('.e2e-event-title').text('イベント名')
     assert('.e2e-event-date').text('2022/01/16（日）')
     assert('.e2e-presentation-title').text('発表タイトル')
-    assert('.e2e-presenter-name').text('by presenter')
+    assert('.e2e-presenter-name').text('by 発表者')
     assert('.e2e-presentation-description').text('発表の説明')
     cy.get('.e2e-presenter-menu').should('not.visible')
 
@@ -71,10 +71,10 @@ describe('ゲストユーザによる操作', () => {
 
     // コメント
     assert('.e2e-commenter-name').count(1)
-    assert('.e2e-commenter-name').text('participant')
+    assert('.e2e-commenter-name').text('参加者')
     assert('.e2e-comment-date').text('2022/01/19 18:40')
     assert('.e2e-comment').text('コメント by participant')
-    cy.get('.e2e-comment-menu').should('not.visible')
+    cy.get('.e2e-commenter-menu').should('not.visible')
   })
 
   it('コメント登録', () => {

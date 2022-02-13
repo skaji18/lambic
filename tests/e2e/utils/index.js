@@ -26,7 +26,28 @@ export const assert = (selector, index = 0) => ({
       expect(elem.text().trim()).to.equal(expected)
     })
   },
+  notNull () {
+    cy.get(selector).eq(index).should((elem) => expect(elem.text().trim()).to.be.not.null)
+  },
   count (expected) {
     cy.get(selector).should((elem) => expect(elem.length).to.equal(expected))
+  }
+})
+
+export const setValue = (selector, index = 0) => ({
+  textBox (value) {
+    cy.get(`${selector} input`).eq(index).clear()
+    cy.get(`${selector} input`).eq(index).type(value)
+  },
+  textArea (value) {
+    cy.get(`${selector} textArea`).eq(index).clear()
+    cy.get(`${selector} textArea`).eq(index).type(value)
+  },
+  check (value) {
+    if (value) {
+      cy.get(`${selector} input`).eq(index).check({ force: true })
+    } else {
+      cy.get(`${selector} input`).eq(index).uncheck({ force: true })
+    }
   }
 })

@@ -30,6 +30,7 @@
     "vuexfire": "^3.1.2"
   },
   "devDependencies": {
+    "@cypress/webpack-preprocessor": "^5.11.1",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-e2e-cypress": "^4.5.15",
     "@vue/cli-plugin-eslint": "^3.11.0",

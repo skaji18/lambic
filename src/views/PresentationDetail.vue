@@ -26,13 +26,13 @@
               </v-btn>
             </template>
             <v-list class="px-2">
-              <v-list-tile @click="editPresentation">
+              <v-list-tile @click="editPresentation" class="e2e-edit-presentation">
                 <v-list-tile-title>
                   <v-icon class="mr-1">edit</v-icon>編集する
                 </v-list-tile-title>
               </v-list-tile>
               <v-divider class="mx-2"></v-divider>
-              <v-list-tile @click="deletePresentation">
+              <v-list-tile @click="deletePresentation" class="e2e-delete-presentation">
                 <v-list-tile-title>
                   <v-icon class="mr-1">delete_forever</v-icon>削除する
                 </v-list-tile-title>
@@ -108,15 +108,15 @@
               <span class="e2e-comment-date">{{ comment.postedAt | toDateTimeString }}</span>
               <v-menu bottom left v-if="comment.isEditable || comment.isDeletable">
                 <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on" class="e2e-comment-menu">
+                  <v-btn icon v-on="on" class="e2e-commenter-menu">
                     <v-icon>more_vert</v-icon>
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-tile v-if="comment.isEditable" @click="openModifyComment(comment.id)">
+                  <v-list-tile v-if="comment.isEditable" @click="openModifyComment(comment.id)" class="e2e-edit-comment">
                     <v-list-tile-title>編集</v-list-tile-title>
                   </v-list-tile>
-                  <v-list-tile v-if="comment.isDeletable" @click="deleteComment(comment.id)">
+                  <v-list-tile v-if="comment.isDeletable" @click="deleteComment(comment.id)" class="e2e-delete-comment">
                     <v-list-tile-title>削除</v-list-tile-title>
                   </v-list-tile>
                 </v-list>
@@ -125,7 +125,7 @@
             <p class="markdown__preview e2e-comment" v-html="convertMd2Html(comment.comment)"></p>
           </v-card-text>
         </div>
-        <v-card-text v-if="comments.length === 0">
+        <v-card-text v-if="comments.length === 0" class="e2e-not-data-comment">
           <p>まだコメントはありません。</p>
         </v-card-text>
       </v-card>
@@ -197,6 +197,7 @@
                   name="comment-input"
                   label="input comment"
                   v-model="comment"
+                  class="e2e-comment-input"
                 ></v-textarea>
               </v-tab-item>
               <v-tab-item>
@@ -245,6 +246,7 @@
             <v-btn
               color="primary"
               @click="postCommnet"
+              class="e2e-post-comment"
             >
               submit
             </v-btn>

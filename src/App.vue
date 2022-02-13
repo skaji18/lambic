@@ -17,7 +17,7 @@
       <v-list dense class="pt-0">
 
         <v-list-tile v-if="user" class="my-2">
-          <button type="button" @click="goMyPage"">
+          <button type="button" @click="goMyPage">
             <v-list-tile-avatar>
               <img v-bind:src="user.photoURL">
             </v-list-tile-avatar>
@@ -39,7 +39,7 @@
           <v-list-tile-content>
             <v-list-tile-title class="e2e-user-name">ゲストユーザ</v-list-tile-title>
             <v-list-tile-sub-title>
-              <button type="button" @click="goLogin">ログイン</button>
+              <button type="button" @click="goLogin" class="e2e-login">ログイン</button>
             </v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>
