@@ -4,6 +4,7 @@ import { signIn } from '../support/firebase'
 describe('発表者による操作', () => {
   beforeEach(() => {
     cy.wrap(signIn('presenter@example.com', 'presenter@example.com'))
+    cy.wait(1000)
 
     // Note: サイドメニューを閉じるのが面倒なので、画面サイズを大きくしておく
     cy.viewport('macbook-13')

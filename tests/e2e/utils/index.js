@@ -22,7 +22,7 @@ export const moveTo = {
 
 export const assert = (selector, index = 0) => ({
   text (expected) {
-    cy.get(selector).eq(index).contains(expected).should((elem) => {
+    cy.get(selector).eq(index).should((elem) => {
       expect(elem.text().trim()).to.equal(expected)
     })
   },
